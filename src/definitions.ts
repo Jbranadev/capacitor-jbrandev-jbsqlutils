@@ -26,13 +26,303 @@ export interface jbsqlutilsjsPlugin {
    */
   insertInto(insertOptions:InsertOptions):Promise<InsertResult>;
 
+  /**
+   * Actualiza las columnas de la tabla especificada en updateOptions de acuerdo a la logica proporcionada
+   * @param {UpdateOptions} updateOptions Definición de la tabla a actualizar
+   * @returns {UpdateResult} Cantidad de filas actualizadas en BD's
+   */
+  update(updateOptions:UpdateOptions):Promise<UpdateResult>;
 
+  /**
+   * Elimina los registros de la tabla especificada de acuerdo a la logica proporcionada
+   * @param {DeleteOptions} deleteOptions Definición de la logica a aplicar para eliminar los registros de la tabla proporcionada
+   * @returns {DeleteResult} Cantidad de filas eliminadas en BD's
+   */
+  delete(deleteOptions:DeleteOptions):Promise<DeleteResult>;
+
+  /**
+   * Obtiene los registros del tipo de dato proporcionado de la tabla especificada en el objeto selectOptions
+   * @param selectOptions Define la logica de la sentencia Select a ejecutar
+   */
+  select<T>(selectOptions:SelectOptions):Promise<T[]>;
+
+}
+
+
+/**
+ * Define las columnas a obtener en cada registro de la tabla especificada de acuerdo a la 
+ * logica proporcionada.
+ */
+export interface SelectOptions{
+  /**
+   * Nombre de la tabla de la que se desean obtener los registros
+   */
+   tableName:string;
+
+   /**
+    * Agrega la logica de un filtro where al momento de obtener registros de BD's
+    * @type {?Where}
+    */
+   where?:Where;
+
+   /**
+    * Define las columnas a obtener de la tabla, de desear obtener todas las columnas, no especificar esta
+    * propiedad
+    * @type {?string[]}
+    */
+   columns?:string[];
 
 }
 
 
 
+/**
+ * Define el resultado de eliminar registros en BD's
+ */
+export interface DeleteResult{
+  /**
+   * Cantidad de filas que se han sido eliminadas al ejecutar la sentencia SQL.
+   * @type {number}
+   */
+  rows_delete:number;
+}
 
+/**
+ * Define la tabla y la logica a aplicar al momento de eliminar los registros de BD's
+ */
+export interface DeleteOptions{
+  
+  /**
+   * Nombre de la tabla en la que se desea eliminar registros
+   */
+  tableName:string;
+
+  /**
+   * Agrega la logica de un filtro where al momento de eliminar registros en BD's
+   * @type {?Where}
+   */
+  where?:Where;
+}
+
+
+/**
+ * Define el resultado de actualizar registros en BD's
+ */
+ export interface UpdateResult{
+  /**
+   * Cantidad de filas que se han visto afectadas al ejecutar la sentencia SQL.
+   * @type {number}
+   */
+  rows_update:number;
+}
+
+/**
+ * Define las columnas que seran actualizadas en la tabla especificada.
+ */
+export interface UpdateOptions{
+  /**
+   * Nombre de la tabla a actualizar
+   * @type {string}
+   */
+  tableName:string;
+
+  /**
+   * Columnas a actualizar
+   * @type {ValueUpdate}
+   */
+  valueUpdate:ValueUpdate;
+}
+
+
+
+/**
+ * Define la columna a actualizar con el valor proporcionado en la tabla especificada 
+ */
+export interface ValueUpdate{
+  /**
+   * Nombre de la columna a actualizar
+   * @type {string}
+   */
+  columName:string;
+
+  /**
+   * Valor a setear en la columna
+   * @type {Object}
+   */
+  value:any;
+
+  /**
+   * Agrega la capacidad de poder actualizar el valor de otra columna en la misma sentencia Update
+   * @type {?ValueUpdate}
+   */
+  andValueUpdate?:ValueUpdate;
+
+  /**
+   * Agrega la logica de un filtro where a la actualización de registros en BD's
+   * @type {?Where}
+   */
+  where?:Where;
+
+}
+
+
+/**
+ * Proporciona la logica de una sentencia Where sobre la información que contiene esta interface, añadiendo la capacidad
+ * de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
+ */
+export interface Where{
+
+  /**
+   * Nombre de la columna sobre la cual se evaluara la sentencia WHERE
+   * @type {string}
+   */
+  columName:string;
+
+  /**
+   * Operador sobre el cual se evalura la columna respecto al valor proporcionado
+   * @type {Operator}
+   */
+  operator:Operator;
+
+  /**
+   * Valor contra el que se evaluara la columna
+   */
+  value:any
+}
+
+
+/**
+ * Proporciona la logica de una sentencia And sobre la información que contiene esta interface, añadiendo la capacidad
+ * de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
+ */
+export interface And{
+  /**
+   * Nombre de la columna sobre la cual se evaluara la sentencia AND
+   * @type {string}
+   */
+  columName:string;
+
+  /**
+   * Operador sobre el cual se evalura la columna respecto al valor proporcionado
+   * @type {Operator}
+   */
+  operator:Operator;
+
+  /**
+   * Valor contra el que se evaluara la columna
+   */
+  value:any
+
+  
+  /**
+   * Agrega la logica de una sentencia And sobre la información proporcionada.
+   * @type {?And}
+   */
+   and?:And;
+
+   /**
+    * Agrega la logica de una sentencia Or sobre la información proporcionada.
+    * @type {?Or}
+    */
+   or?:Or;
+ 
+ 
+   /**
+    * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
+    * @type {?OrderBy}
+    */
+   orderBy?:OrderBy;
+ 
+   /**
+    * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
+    * @type {?Take}
+    */
+    take?:Take;
+ 
+ 
+}
+
+
+/**
+ * Proporciona la logica de una sentencia Or sobre la información que contiene esta interface, añadiendo la capacidad
+ * de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
+ */
+export interface Or{
+  /**
+   * Nombre de la columna sobre la cual se evaluara la sentencia OR
+   * @type {string}
+   */
+  columName:string;
+  /**
+   * Operador sobre el cual se evalura la columna respecto al valor proporcionado
+   * @type {Operator}
+   */
+  operator:Operator;
+  /**
+   * Valor contra el que se evaluara la columna
+   */
+  value:any
+
+  /**
+   * Agrega la logica de una sentencia And sobre la información proporcionada.
+   * @type {?And}
+   */
+  and?:And;
+
+  /**
+   * Agrega la logica de una sentencia Or sobre la información proporcionada.
+   * @type {?Or}
+   */
+  or?:Or;
+
+
+  /**
+   * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
+   * @type {?OrderBy}
+   */
+  orderBy?:OrderBy;
+
+  /**
+   * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
+   * @type {?Take}
+   */
+   take?:Take;
+
+
+}
+
+/**
+ * Define el tipo de ordenamiento que deseamos se ejecute al realizar una consulta, añadiendo la capacidad de poder
+ * limitar la cantidad de resultados a travez de la sentencia TAKE
+ */
+export interface OrderBy{
+  /**
+   * Nombre de la columna por medio de la cual queremos ordenar
+   * @type {string}
+   */
+  columName:string;
+  /**
+   * Tipo de ordenamiento que queremos realizar 
+   * @type {(OrderType.ASC|OrderType.DESC)}
+   */
+  orderType:OrderType;
+  /**
+   * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
+   * @type {?Take}
+   */
+  take?:Take;
+}
+
+/**
+ * Define un limite de registros a tomar dentro de una sentencia con filtro Where
+ */
+export interface Take{
+  /**
+   * Cantidad Maxima de Registros que se desea tomar al filtrar con una sentencia Where
+   * @type {number}
+   */
+  limite:number;
+}
 
 
 
@@ -48,16 +338,16 @@ export interface InsertOptions{
   tableName:string;
   /**
    * Array de valores a insertar en la tabla.
-   * @type {valuesInsert[]}
+   * @type {ValuesInsert[]}
    */
-  values:valuesInsert[];
+  values:ValuesInsert[];
 }
 
 
 /**
  * Define el valor a insertar y en que columna
  */
-export interface valuesInsert{
+export interface ValuesInsert{
   /**
    * Nombre de la columna en la que se insertara el valor proporcionado
    * @type{string}
@@ -113,7 +403,7 @@ export interface Column{
   /**
    * Indica el valor por default que tendra la columna en BD's
    * Es importante que para que este sea efectivo, agregar en las restriccions, la Constraint.DEFAULT.
-   * @type {string}
+   * @type {?string}
    */
   default_value?:string;
   /**
@@ -123,7 +413,7 @@ export interface Column{
   dataTypeSQL:DataType;
   /**
    * Array que Indica las restricciones SQL que tendra este campo.
-   * @type {Constraint[]}
+   * @type {?Constraint[]}
    */
   restriccions?:Constraint[];
 }
