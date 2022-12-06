@@ -1,7 +1,21 @@
 package com.jbrandev.pluggins.jbsqlutils;
 
-import android.util.Log;
+import static io.github.josecarlosbran.JBSqlUtils.Utilities.UtilitiesJB.stringIsNullOrEmpty;
 
+import com.getcapacitor.JSArray;
+import com.getcapacitor.JSObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.josecarlosbran.JBSqlUtils.Column;
+import io.github.josecarlosbran.JBSqlUtils.Enumerations.Constraint;
+import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataBase;
+import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataType;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.DataBaseUndefind;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.PropertiesDBUndefined;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.ValorUndefined;
@@ -10,12 +24,94 @@ import io.github.josecarlosbran.JBSqlUtils.JBSqlUtils;
 public class jbsqlutilsjs {
     //Definicion de metodos
 
-    public void setearPropiedadesConexión(){
-        
+
+    /**
+     * Setea las propiedades de conexión a BD's
+     * @param propertysConection JsonObject con las propiedades de conexción
+     * @throws DataBaseUndefind Lanza esta excepción si no esta definido el tipo de BD's a conectarse
+     * @throws PropertiesDBUndefined Lanza esta excepción si no esta definido el nombre de la BD's a conectarse,
+     * en el caso de BD's diferentes a SQLite, si falta el puerto, host, user, password, lanzara esta excepción
+     */
+    public void setearPropiedadesConexión(JSObject propertysConection) throws DataBaseUndefind, PropertiesDBUndefined {
+        String databasetypestring=propertysConection.getString("dataBaseType");
+        String dataBase=propertysConection.getString("dataBase");
+        String port=propertysConection.getString("port");
+        String host=propertysConection.getString("host");
+        String user=propertysConection.getString("user");
+        String password=propertysConection.getString("password");
+        if(!stringIsNullOrEmpty(databasetypestring)){
+            JBSqlUtils.setDataBaseTypeGlobal(DataBase.SQLite.getNumeracionforName(databasetypestring));
+            if(!stringIsNullOrEmpty(dataBase)){
+                JBSqlUtils.setDataBaseGlobal(dataBase);
+
+                if(!stringIsNullOrEmpty(port)){
+                    JBSqlUtils.setPortGlobal(port);
+                }else{
+                    if(DataBase.SQLite.getNumeracionforName(databasetypestring)!=DataBase.SQLite){
+                        throw new PropertiesDBUndefined("No se a seteado el puerto en el que se encuentra escuchando la BD's a la cual deseamos se pegue JBSqlUtils");
+                    }
+                }
+
+                if(!stringIsNullOrEmpty(host)){
+                    JBSqlUtils.setHostGlobal(host);
+                }else{
+                    if(DataBase.SQLite.getNumeracionforName(databasetypestring)!=DataBase.SQLite){
+                        throw new PropertiesDBUndefined("No se a seteado el host en el que se encuentra la BD's a la cual deseamos se pegue JBSqlUtils");
+                    }
+                }
+
+                if(!stringIsNullOrEmpty(user)){
+                    JBSqlUtils.setUserGlobal(user);
+                }else{
+                    if(DataBase.SQLite.getNumeracionforName(databasetypestring)!=DataBase.SQLite){
+                        throw new PropertiesDBUndefined("No se a seteado el usuario de la BD's a la cual deseamos se pegue JBSqlUtils");
+                    }
+                }
+
+                if(!stringIsNullOrEmpty(password)){
+                    JBSqlUtils.setPasswordGlobal(password);
+                }else{
+                    if(DataBase.SQLite.getNumeracionforName(databasetypestring)!=DataBase.SQLite){
+                        throw new PropertiesDBUndefined("No se a seteado la contraseña del usuario de la BD's a la cual deseamos se pegue JBSqlUtils");
+                    }
+                }
+            }else{
+                throw new PropertiesDBUndefined("No se a seteado la BD's a la cual deseamos se pegue JBSqlUtils");
+            }
+        }else{
+            throw new DataBaseUndefind("No se a seteado la DataBase que índica a que BD's deseamos se pegue JBSqlUtils");
+        }
     }
 
     public boolean dropTableIfExist(String TableName) throws DataBaseUndefind, PropertiesDBUndefined, ValorUndefined {
         return JBSqlUtils.dropTableIfExist(TableName).execute();
+    }
+
+    public List<Column> getColumns(JSArray columnsarray) throws JSONException {
+        List<Column> columnas=new ArrayList<>();
+        List<JSObject> colums=columnsarray.toList();
+        for(JSObject column:colums){
+            String name=column.getString("name");
+            String default_value=column.getString("default_value");
+            String tempType=column.getString("dataTypeSQL");
+            //Obtenemos las restricciones
+            JSONArray restriccionesJson=column.getJSONArray("restriccions");
+            List<String> restriccions=new ArrayList<>();
+            for(int i=0; i<restriccionesJson.length(); i++){
+                restriccions.add(restriccionesJson.getString(i));
+            }
+            List<Constraint> restriccionesList=new ArrayList<>();
+            for(String restricciontemp:restriccions){
+                restriccionesList.add(Constraint.AUTO_INCREMENT.getNumeracionforName(restricciontemp));
+            }
+
+
+
+            DataType tipo= DataType.CHAR.getNumeracionforName(tempType);
+        }
+
+
+        return columnas;
     }
 
 }
