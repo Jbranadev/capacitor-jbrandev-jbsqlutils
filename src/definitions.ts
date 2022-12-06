@@ -1,7 +1,7 @@
 import type { PermissionState } from "@capacitor/core";
 
 export interface jbsqlutilsjsPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
+ 
 
   /**
    * Elimina la tabla especificada como parametro
