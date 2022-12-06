@@ -2,10 +2,20 @@ package com.jbrandev.pluggins.jbsqlutils;
 
 import android.util.Log;
 
-public class jbsqlutilsjs {
+import io.github.josecarlosbran.JBSqlUtils.Exceptions.DataBaseUndefind;
+import io.github.josecarlosbran.JBSqlUtils.Exceptions.PropertiesDBUndefined;
+import io.github.josecarlosbran.JBSqlUtils.Exceptions.ValorUndefined;
+import io.github.josecarlosbran.JBSqlUtils.JBSqlUtils;
 
-    public String echo(String value) {
-        Log.i("Echo", value);
-        return value;
+public class jbsqlutilsjs {
+    //Definicion de metodos
+
+    public void setearPropiedadesConexión(){
+        
     }
+
+    public boolean dropTableIfExist(String TableName) throws DataBaseUndefind, PropertiesDBUndefined, ValorUndefined {
+        return JBSqlUtils.dropTableIfExist(TableName).execute();
+    }
+
 }

@@ -1,7 +1,7 @@
 import type { PermissionState } from "@capacitor/core";
 
 export interface jbsqlutilsjsPlugin {
- 
+
 
   /**
    * Elimina la tabla especificada como parametro
@@ -9,7 +9,7 @@ export interface jbsqlutilsjsPlugin {
    * @returns {DropTableResult}  True si la tabla fue eliminada de BD's, False si la tabla no existe en BD's o si
    * sucedio algun error al momento de eliminar la tabla
    */
-  dropTableIfExist( droptableOptions:DropTableOptions):Promise<DropTableResult>;
+  dropTableIfExist(droptableOptions: DropTableOptions): Promise<DropTableResult>;
 
   /**
    * Crea la tabla especificada como parametro
@@ -17,60 +17,110 @@ export interface jbsqlutilsjsPlugin {
    * @returns {CreateTableResult} True si la tabla fue creada en BD's, False si la tabla ya existe en BD's
    * o si sucedio algun error al momento de crear la tabla
    */
-  createTable(createtableOptions:CreateTableOptions):Promise<CreateTableResult>;
+  createTable(createtableOptions: CreateTableOptions): Promise<CreateTableResult>;
 
   /**
    * Inserta un nuevo registro en la tabla proporcionada con los valores indicados en insertOptions
    * @param {InsertOptions} insertOptions Tabla sobre la cual se realizara el Insert y los Valores a insertar
    * @returns {InsertResult} Cantidad de filas Insertadas
    */
-  insertInto(insertOptions:InsertOptions):Promise<InsertResult>;
+  insertInto(insertOptions: InsertOptions): Promise<InsertResult>;
 
   /**
    * Actualiza las columnas de la tabla especificada en updateOptions de acuerdo a la logica proporcionada
    * @param {UpdateOptions} updateOptions Definición de la tabla a actualizar
    * @returns {UpdateResult} Cantidad de filas actualizadas en BD's
    */
-  update(updateOptions:UpdateOptions):Promise<UpdateResult>;
+  update(updateOptions: UpdateOptions): Promise<UpdateResult>;
 
   /**
    * Elimina los registros de la tabla especificada de acuerdo a la logica proporcionada
    * @param {DeleteOptions} deleteOptions Definición de la logica a aplicar para eliminar los registros de la tabla proporcionada
    * @returns {DeleteResult} Cantidad de filas eliminadas en BD's
    */
-  delete(deleteOptions:DeleteOptions):Promise<DeleteResult>;
+  delete(deleteOptions: DeleteOptions): Promise<DeleteResult>;
 
   /**
    * Obtiene los registros del tipo de dato proporcionado de la tabla especificada en el objeto selectOptions
    * @param selectOptions Define la logica de la sentencia Select a ejecutar
    */
-  select<T>(selectOptions:SelectOptions):Promise<T[]>;
+  select<T>(selectOptions: SelectOptions): Promise<T[]>;
 
 }
 
 
 /**
+ * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+ */
+export interface ConectionOptions {
+
+  /**
+   * Tipo de BD's a la cual se estara conectando el Modelo, los tipos disponibles son                
+   * MySQL, SQLServer, PostgreSQL, SQLite.
+   */
+  dataBaseType: DataBase;
+
+  /**
+   * Nombre de la Base de Datos a la que se conectara el modelo.
+   */
+  dataBase: string;
+
+  /**
+   * Puerto en el cual se encuentra escuchando la BD's a la cual se pegara JBSqlUtils
+   * este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL
+   */
+  port?: string;
+
+  /**
+   * Host en el cual se encuentra la BD's a la que nos queremos conectar.
+   * este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL
+   */
+  host?: string;
+
+  /**
+   * Usuario con el cual el JBSqlUtils se conectara a la BD's.
+   * este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL
+   */
+  user?: string;
+
+  /**
+   * Contraseña del usuario con el cual JBSqlUtils se conectara a la BD's.
+   * este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL
+   */
+  password?: string;
+
+}
+
+/**
  * Define las columnas a obtener en cada registro de la tabla especificada de acuerdo a la 
  * logica proporcionada.
  */
-export interface SelectOptions{
+export interface SelectOptions {
   /**
    * Nombre de la tabla de la que se desean obtener los registros
    */
-   tableName:string;
+  tableName: string;
 
-   /**
-    * Agrega la logica de un filtro where al momento de obtener registros de BD's
-    * @type {?Where}
-    */
-   where?:Where;
+  /**
+   * Agrega la logica de un filtro where al momento de obtener registros de BD's
+   * @type {?Where}
+   */
+  where?: Where;
 
-   /**
-    * Define las columnas a obtener de la tabla, de desear obtener todas las columnas, no especificar esta
-    * propiedad
-    * @type {?string[]}
-    */
-   columns?:string[];
+  /**
+   * Define las columnas a obtener de la tabla, de desear obtener todas las columnas, no especificar esta
+   * propiedad
+   * @type {?string[]}
+   */
+  columns?: string[];
+
+
+  
+/**
+ * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+ * @type {ConectionOptions}
+ */
+  propertysConection: ConectionOptions;
 
 }
 
@@ -79,58 +129,70 @@ export interface SelectOptions{
 /**
  * Define el resultado de eliminar registros en BD's
  */
-export interface DeleteResult{
+export interface DeleteResult {
   /**
    * Cantidad de filas que se han sido eliminadas al ejecutar la sentencia SQL.
    * @type {number}
    */
-  rows_delete:number;
+  rows_delete: number;
 }
 
 /**
  * Define la tabla y la logica a aplicar al momento de eliminar los registros de BD's
  */
-export interface DeleteOptions{
-  
+export interface DeleteOptions {
+
   /**
    * Nombre de la tabla en la que se desea eliminar registros
    */
-  tableName:string;
+  tableName: string;
 
   /**
    * Agrega la logica de un filtro where al momento de eliminar registros en BD's
    * @type {?Where}
    */
-  where?:Where;
+  where?: Where;
+
+  /**
+ * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+ * @type {ConectionOptions}
+ */
+   propertysConection: ConectionOptions;
 }
 
 
 /**
  * Define el resultado de actualizar registros en BD's
  */
- export interface UpdateResult{
+export interface UpdateResult {
   /**
    * Cantidad de filas que se han visto afectadas al ejecutar la sentencia SQL.
    * @type {number}
    */
-  rows_update:number;
+  rows_update: number;
 }
 
 /**
  * Define las columnas que seran actualizadas en la tabla especificada.
  */
-export interface UpdateOptions{
+export interface UpdateOptions {
   /**
    * Nombre de la tabla a actualizar
    * @type {string}
    */
-  tableName:string;
+  tableName: string;
 
   /**
    * Columnas a actualizar
    * @type {ValueUpdate}
    */
-  valueUpdate:ValueUpdate;
+  valueUpdate: ValueUpdate;
+
+  /**
+ * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+ * @type {ConectionOptions}
+ */
+   propertysConection: ConectionOptions;
 }
 
 
@@ -138,30 +200,30 @@ export interface UpdateOptions{
 /**
  * Define la columna a actualizar con el valor proporcionado en la tabla especificada 
  */
-export interface ValueUpdate{
+export interface ValueUpdate {
   /**
    * Nombre de la columna a actualizar
    * @type {string}
    */
-  columName:string;
+  columName: string;
 
   /**
    * Valor a setear en la columna
    * @type {Object}
    */
-  value:any;
+  value: any;
 
   /**
    * Agrega la capacidad de poder actualizar el valor de otra columna en la misma sentencia Update
    * @type {?ValueUpdate}
    */
-  andValueUpdate?:ValueUpdate;
+  andValueUpdate?: ValueUpdate;
 
   /**
    * Agrega la logica de un filtro where a la actualización de registros en BD's
    * @type {?Where}
    */
-  where?:Where;
+  where?: Where;
 
 }
 
@@ -170,24 +232,24 @@ export interface ValueUpdate{
  * Proporciona la logica de una sentencia Where sobre la información que contiene esta interface, añadiendo la capacidad
  * de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
  */
-export interface Where{
+export interface Where {
 
   /**
    * Nombre de la columna sobre la cual se evaluara la sentencia WHERE
    * @type {string}
    */
-  columName:string;
+  columName: string;
 
   /**
    * Operador sobre el cual se evalura la columna respecto al valor proporcionado
    * @type {Operator}
    */
-  operator:Operator;
+  operator: Operator;
 
   /**
    * Valor contra el que se evaluara la columna
    */
-  value:any
+  value: any
 }
 
 
@@ -195,51 +257,51 @@ export interface Where{
  * Proporciona la logica de una sentencia And sobre la información que contiene esta interface, añadiendo la capacidad
  * de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
  */
-export interface And{
+export interface And {
   /**
    * Nombre de la columna sobre la cual se evaluara la sentencia AND
    * @type {string}
    */
-  columName:string;
+  columName: string;
 
   /**
    * Operador sobre el cual se evalura la columna respecto al valor proporcionado
    * @type {Operator}
    */
-  operator:Operator;
+  operator: Operator;
 
   /**
    * Valor contra el que se evaluara la columna
    */
-  value:any
+  value: any
 
-  
+
   /**
    * Agrega la logica de una sentencia And sobre la información proporcionada.
    * @type {?And}
    */
-   and?:And;
+  and?: And;
 
-   /**
-    * Agrega la logica de una sentencia Or sobre la información proporcionada.
-    * @type {?Or}
-    */
-   or?:Or;
- 
- 
-   /**
-    * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
-    * @type {?OrderBy}
-    */
-   orderBy?:OrderBy;
- 
-   /**
-    * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
-    * @type {?Take}
-    */
-    take?:Take;
- 
- 
+  /**
+   * Agrega la logica de una sentencia Or sobre la información proporcionada.
+   * @type {?Or}
+   */
+  or?: Or;
+
+
+  /**
+   * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
+   * @type {?OrderBy}
+   */
+  orderBy?: OrderBy;
+
+  /**
+   * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
+   * @type {?Take}
+   */
+  take?: Take;
+
+
 }
 
 
@@ -247,46 +309,46 @@ export interface And{
  * Proporciona la logica de una sentencia Or sobre la información que contiene esta interface, añadiendo la capacidad
  * de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
  */
-export interface Or{
+export interface Or {
   /**
    * Nombre de la columna sobre la cual se evaluara la sentencia OR
    * @type {string}
    */
-  columName:string;
+  columName: string;
   /**
    * Operador sobre el cual se evalura la columna respecto al valor proporcionado
    * @type {Operator}
    */
-  operator:Operator;
+  operator: Operator;
   /**
    * Valor contra el que se evaluara la columna
    */
-  value:any
+  value: any
 
   /**
    * Agrega la logica de una sentencia And sobre la información proporcionada.
    * @type {?And}
    */
-  and?:And;
+  and?: And;
 
   /**
    * Agrega la logica de una sentencia Or sobre la información proporcionada.
    * @type {?Or}
    */
-  or?:Or;
+  or?: Or;
 
 
   /**
    * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
    * @type {?OrderBy}
    */
-  orderBy?:OrderBy;
+  orderBy?: OrderBy;
 
   /**
    * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
    * @type {?Take}
    */
-   take?:Take;
+  take?: Take;
 
 
 }
@@ -295,33 +357,33 @@ export interface Or{
  * Define el tipo de ordenamiento que deseamos se ejecute al realizar una consulta, añadiendo la capacidad de poder
  * limitar la cantidad de resultados a travez de la sentencia TAKE
  */
-export interface OrderBy{
+export interface OrderBy {
   /**
    * Nombre de la columna por medio de la cual queremos ordenar
    * @type {string}
    */
-  columName:string;
+  columName: string;
   /**
    * Tipo de ordenamiento que queremos realizar 
    * @type {(OrderType.ASC|OrderType.DESC)}
    */
-  orderType:OrderType;
+  orderType: OrderType;
   /**
    * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
    * @type {?Take}
    */
-  take?:Take;
+  take?: Take;
 }
 
 /**
  * Define un limite de registros a tomar dentro de una sentencia con filtro Where
  */
-export interface Take{
+export interface Take {
   /**
    * Cantidad Maxima de Registros que se desea tomar al filtrar con una sentencia Where
    * @type {number}
    */
-  limite:number;
+  limite: number;
 }
 
 
@@ -330,46 +392,52 @@ export interface Take{
 /**
  * Define la tabla sobre la cual se realizara el Insert y los valores a insertar
  */
-export interface InsertOptions{
+export interface InsertOptions {
   /**
    * Nombre de la tabla sobre la que se efectuara el Insert
    * @type{string}
    */
-  tableName:string;
+  tableName: string;
   /**
    * Array de valores a insertar en la tabla.
    * @type {ValuesInsert[]}
    */
-  values:ValuesInsert[];
+  values: ValuesInsert[];
+
+  /**
+ * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+ * @type {ConectionOptions}
+ */
+   propertysConection: ConectionOptions;
 }
 
 
 /**
  * Define el valor a insertar y en que columna
  */
-export interface ValuesInsert{
+export interface ValuesInsert {
   /**
    * Nombre de la columna en la que se insertara el valor proporcionado
    * @type{string}
    */
-  columName:string;
+  columName: string;
   /**
    * Valor a insertar
    * @type{any}
    */
-  value:any;
+  value: any;
 }
 
 
 /**
  * Define el resultado de insertar un registro en BD's
  */
-export interface InsertResult{
+export interface InsertResult {
   /**
    * Cantidad de filas que se han visto afectadas al ejecutar la sentencia SQL.
    * @type {number}
    */
-  rows_insert:number;
+  rows_insert: number;
 }
 
 
@@ -377,57 +445,63 @@ export interface InsertResult{
  * Representación de la tabla a crear en BD's a traves del metodo createTable
  */
 
-export interface CreateTableOptions{
+export interface CreateTableOptions {
   /**
    * Nombre de la tabla a crear
    * @type {string}
    */
-  tableName:string;
+  tableName: string;
   /**
    * Array de Columnas que tendra la tabla al momento de ser creada en BD's
    * @type{Column[]}
    */
-  columnas:Column[];
+  columnas: Column[];
+
+  /**
+ * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+ * @type {ConectionOptions}
+ */
+   propertysConection: ConectionOptions;
 }
 
 
 /**
  * Representación de una columna a crear en BD's
  */
-export interface Column{
+export interface Column {
   /**
    * Nombre de la columna
    * @type {string}
    */
-  name:string;
+  name: string;
   /**
    * Indica el valor por default que tendra la columna en BD's
    * Es importante que para que este sea efectivo, agregar en las restriccions, la Constraint.DEFAULT.
    * @type {?string}
    */
-  default_value?:string;
+  default_value?: string;
   /**
    * DataType que indica el tipo de dato SQL que almacenara la columna.
    * @type {DataType}
    */
-  dataTypeSQL:DataType;
+  dataTypeSQL: DataType;
   /**
    * Array que Indica las restricciones SQL que tendra este campo.
    * @type {?Constraint[]}
    */
-  restriccions?:Constraint[];
+  restriccions?: Constraint[];
 }
 
 /**
  * Resultado del metodo createTable
  */
- export interface CreateTableResult{
+export interface CreateTableResult {
   /**
    * True si la tabla a sido creada, false si la tabla ya existe en BD's o si sucede un error 
    * al momento de ejecutar la sentencia SQL
    * @type {boolean}
    */
-  execute:boolean;
+  execute: boolean;
 }
 
 
@@ -436,24 +510,30 @@ export interface Column{
 /**
  * Opciones disponibles a envíar en el metodo DropTableIfExist
  */
-export interface DropTableOptions{
+export interface DropTableOptions {
   /**
    * Nombre de la tabla a eliminar
    * @type {string}
    */
-  tableName:string;
+  tableName: string;
+
+  /**
+ * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+ * @type {ConectionOptions}
+ */
+   propertysConection: ConectionOptions;
 }
 
 /**
  * Resultado del metodo DropTableIfExist
  */
-export interface DropTableResult{
+export interface DropTableResult {
   /**
    * True si la tabla fue eliminada en BD's, False si la tabla no existe en BD's o si 
    * sucede algun problema al ejecutar la sentencia SQL.
    * @type {boolean}
    */
-  execute:boolean;
+  execute: boolean;
 }
 
 
@@ -830,7 +910,7 @@ export enum OrderType {
  * Sirve para que el pluggin pueda identificar si la aplicación cuenta con los permisos requeridos
  * para el funcionamiento correcto de este.
  */
- export interface PermissionStatus {
+export interface PermissionStatus {
   // TODO: change 'location' to the actual name of your alias!
   location: PermissionState;
 }
