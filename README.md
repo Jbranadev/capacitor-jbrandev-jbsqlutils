@@ -13,7 +13,6 @@ npx cap sync
 
 <docgen-index>
 
-* [`echo(...)`](#echo)
 * [`dropTableIfExist(...)`](#droptableifexist)
 * [`createTable(...)`](#createtable)
 * [`insertInto(...)`](#insertinto)
@@ -27,21 +26,6 @@ npx cap sync
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
-
-### echo(...)
-
-```typescript
-echo(options: { value: string; }) => Promise<{ value: string; }>
-```
-
-| Param         | Type                            |
-| ------------- | ------------------------------- |
-| **`options`** | <code>{ value: string; }</code> |
-
-**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
-
---------------------
-
 
 ### dropTableIfExist(...)
 
@@ -161,9 +145,24 @@ Resultado del metodo DropTableIfExist
 
 Opciones disponibles a envíar en el metodo DropTableIfExist
 
-| Prop            | Type                | Description                   |
-| --------------- | ------------------- | ----------------------------- |
-| **`tableName`** | <code>string</code> | Nombre de la tabla a eliminar |
+| Prop                     | Type                                                          | Description                                                                |
+| ------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **`tableName`**          | <code>string</code>                                           | Nombre de la tabla a eliminar                                              |
+| **`propertysConection`** | <code><a href="#conectionoptions">ConectionOptions</a></code> | Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils |
+
+
+#### ConectionOptions
+
+Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils
+
+| Prop               | Type                                          | Description                                                                                                                                                |
+| ------------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`dataBaseType`** | <code><a href="#database">DataBase</a></code> | Tipo de BD's a la cual se estara conectando el Modelo, los tipos disponibles son MySQL, SQLServer, PostgreSQL, SQLite.                                     |
+| **`dataBase`**     | <code>string</code>                           | Nombre de la Base de Datos a la que se conectara el modelo.                                                                                                |
+| **`port`**         | <code>string</code>                           | Puerto en el cual se encuentra escuchando la BD's a la cual se pegara JBSqlUtils este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL |
+| **`host`**         | <code>string</code>                           | Host en el cual se encuentra la BD's a la que nos queremos conectar. este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL             |
+| **`user`**         | <code>string</code>                           | Usuario con el cual el JBSqlUtils se conectara a la BD's. este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL                        |
+| **`password`**     | <code>string</code>                           | Contraseña del usuario con el cual JBSqlUtils se conectara a la BD's. este campo es obligatorio para conectarse a MySQL, SQLServer o PostgreSQL            |
 
 
 #### CreateTableResult
@@ -179,10 +178,11 @@ Resultado del metodo createTable
 
 Representación de la tabla a crear en BD's a traves del metodo createTable
 
-| Prop            | Type                  | Description                                                            |
-| --------------- | --------------------- | ---------------------------------------------------------------------- |
-| **`tableName`** | <code>string</code>   | Nombre de la tabla a crear                                             |
-| **`columnas`**  | <code>Column[]</code> | Array de Columnas que tendra la tabla al momento de ser creada en BD's |
+| Prop                     | Type                                                          | Description                                                                |
+| ------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **`tableName`**          | <code>string</code>                                           | Nombre de la tabla a crear                                                 |
+| **`columnas`**           | <code>Column[]</code>                                         | Array de Columnas que tendra la tabla al momento de ser creada en BD's     |
+| **`propertysConection`** | <code><a href="#conectionoptions">ConectionOptions</a></code> | Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils |
 
 
 #### Column
@@ -210,10 +210,11 @@ Define el resultado de insertar un registro en BD's
 
 Define la tabla sobre la cual se realizara el Insert y los valores a insertar
 
-| Prop            | Type                        | Description                                            |
-| --------------- | --------------------------- | ------------------------------------------------------ |
-| **`tableName`** | <code>string</code>         | Nombre de la tabla sobre la que se efectuara el Insert |
-| **`values`**    | <code>ValuesInsert[]</code> | Array de valores a insertar en la tabla.               |
+| Prop                     | Type                                                          | Description                                                                |
+| ------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **`tableName`**          | <code>string</code>                                           | Nombre de la tabla sobre la que se efectuara el Insert                     |
+| **`values`**             | <code>ValuesInsert[]</code>                                   | Array de valores a insertar en la tabla.                                   |
+| **`propertysConection`** | <code><a href="#conectionoptions">ConectionOptions</a></code> | Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils |
 
 
 #### ValuesInsert
@@ -239,10 +240,11 @@ Define el resultado de actualizar registros en BD's
 
 Define las columnas que seran actualizadas en la tabla especificada.
 
-| Prop              | Type                                                | Description                     |
-| ----------------- | --------------------------------------------------- | ------------------------------- |
-| **`tableName`**   | <code>string</code>                                 | Nombre de la tabla a actualizar |
-| **`valueUpdate`** | <code><a href="#valueupdate">ValueUpdate</a></code> | Columnas a actualizar           |
+| Prop                     | Type                                                          | Description                                                                |
+| ------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **`tableName`**          | <code>string</code>                                           | Nombre de la tabla a actualizar                                            |
+| **`valueUpdate`**        | <code><a href="#valueupdate">ValueUpdate</a></code>           | Columnas a actualizar                                                      |
+| **`propertysConection`** | <code><a href="#conectionoptions">ConectionOptions</a></code> | Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils |
 
 
 #### ValueUpdate
@@ -282,10 +284,11 @@ Define el resultado de eliminar registros en BD's
 
 Define la tabla y la logica a aplicar al momento de eliminar los registros de BD's
 
-| Prop            | Type                                    | Description                                                                  |
-| --------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
-| **`tableName`** | <code>string</code>                     | Nombre de la tabla en la que se desea eliminar registros                     |
-| **`where`**     | <code><a href="#where">Where</a></code> | Agrega la logica de un filtro where al momento de eliminar registros en BD's |
+| Prop                     | Type                                                          | Description                                                                  |
+| ------------------------ | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **`tableName`**          | <code>string</code>                                           | Nombre de la tabla en la que se desea eliminar registros                     |
+| **`where`**              | <code><a href="#where">Where</a></code>                       | Agrega la logica de un filtro where al momento de eliminar registros en BD's |
+| **`propertysConection`** | <code><a href="#conectionoptions">ConectionOptions</a></code> | Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils   |
 
 
 #### SelectOptions
@@ -293,14 +296,25 @@ Define la tabla y la logica a aplicar al momento de eliminar los registros de BD
 Define las columnas a obtener en cada registro de la tabla especificada de acuerdo a la 
 logica proporcionada.
 
-| Prop            | Type                                    | Description                                                                                                    |
-| --------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **`tableName`** | <code>string</code>                     | Nombre de la tabla de la que se desean obtener los registros                                                   |
-| **`where`**     | <code><a href="#where">Where</a></code> | Agrega la logica de un filtro where al momento de obtener registros de BD's                                    |
-| **`columns`**   | <code>string[]</code>                   | Define las columnas a obtener de la tabla, de desear obtener todas las columnas, no especificar esta propiedad |
+| Prop                     | Type                                                          | Description                                                                                                    |
+| ------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **`tableName`**          | <code>string</code>                                           | Nombre de la tabla de la que se desean obtener los registros                                                   |
+| **`where`**              | <code><a href="#where">Where</a></code>                       | Agrega la logica de un filtro where al momento de obtener registros de BD's                                    |
+| **`columns`**            | <code>string[]</code>                                         | Define las columnas a obtener de la tabla, de desear obtener todas las columnas, no especificar esta propiedad |
+| **`propertysConection`** | <code><a href="#conectionoptions">ConectionOptions</a></code> | Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils                                     |
 
 
 ### Enums
+
+
+#### DataBase
+
+| Members          | Value                     | Description |
+| ---------------- | ------------------------- | ----------- |
+| **`SQLite`**     | <code>"SQLite"</code>     | SQLite      |
+| **`MySQL`**      | <code>"MySQL"</code>      | MySQL       |
+| **`SQLServer`**  | <code>"SQLServer"</code>  | SQL Server  |
+| **`PostgreSQL`** | <code>"PostgreSQL"</code> | PostgreSQL  |
 
 
 #### DataType
