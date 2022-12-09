@@ -4,15 +4,19 @@ import static io.github.josecarlosbran.JBSqlUtils.Utilities.UtilitiesJB.stringIs
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
+import com.josebran.LogsJB.LogsJB;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.github.josecarlosbran.JBSqlUtils.Column;
+import io.github.josecarlosbran.JBSqlUtils.DataBase.CreateTable;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.Constraint;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataBase;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataType;
@@ -94,6 +98,7 @@ public class jbsqlutilsjs {
             String name=column.getString("name");
             String default_value=column.getString("default_value");
             String tempType=column.getString("dataTypeSQL");
+            DataType tipo= DataType.CHAR.getNumeracionforName(tempType);
             //Obtenemos las restricciones
             JSONArray restriccionesJson=column.getJSONArray("restriccions");
             List<String> restriccions=new ArrayList<>();
@@ -104,14 +109,46 @@ public class jbsqlutilsjs {
             for(String restricciontemp:restriccions){
                 restriccionesList.add(Constraint.AUTO_INCREMENT.getNumeracionforName(restricciontemp));
             }
-
-
-
-            DataType tipo= DataType.CHAR.getNumeracionforName(tempType);
+            Constraint[] restricciones=restriccionesList.toArray(new Constraint[0]);
+            LogsJB.info("Cantidad de restricciones para la columna: "+restricciones.length);
+            if(restricciones.length==0){
+                restricciones=null;
+            }
+            /**
+             * Asignación de las columnas
+             */
+            if(Objects.isNull(restricciones) && stringIsNullOrEmpty(default_value)){
+                columnas.add(new Column(name, tipo));
+            }else if(Objects.isNull(restricciones)){
+                columnas.add(new Column(name, tipo, default_value));
+            }else{
+                columnas.add(new Column(name, tipo, default_value, restricciones));
+            }
         }
-
-
         return columnas;
+    }
+
+    public Boolean createTable(String tableName, List<Column> columnas) throws ValorUndefined {
+        Boolean respuesta=false;
+        CreateTable create=JBSqlUtils.createTable(tableName);
+        Class ejecutora=create.getClass();
+
+
+        return respuesta;
+    }
+
+    public <T> Boolean createTable(T invocador,  List<Column> columnas) throws NoSuchMethodException {
+        Class ejecutora=invocador.getClass();
+        if(!columnas.isEmpty()){
+            Column temp=columnas.remove(0);
+            Method metodo=ejecutora.getMethod("addColumn", Column.class);
+
+
+
+        }else{
+
+        }
+        return false;
     }
 
 }
