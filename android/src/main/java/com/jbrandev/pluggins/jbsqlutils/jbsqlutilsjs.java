@@ -18,6 +18,8 @@ import java.util.Objects;
 
 import io.github.josecarlosbran.JBSqlUtils.Column;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.CreateTable;
+import io.github.josecarlosbran.JBSqlUtils.DataBase.InsertInto;
+import io.github.josecarlosbran.JBSqlUtils.DataBase.Value;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.Constraint;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataBase;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataType;
@@ -147,7 +149,29 @@ public class jbsqlutilsjs {
             Method metodo=ejecutora.getMethod("createTable", null);
             return (Boolean) metodo.invoke(invocador, null);
         }
-
     }
+
+    public int insertInto(String tableName, JSArray valuesarray) throws JSONException, ValorUndefined, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        List<JSObject> values=valuesarray.toList();
+        JSObject temp=values.remove(0);
+        Value ejecutora= JBSqlUtils.insertInto(tableName).value(temp.getString("columName"), temp.get("value"));
+        return insertInto(ejecutora, values);
+    }
+
+    public  int insertInto(Object invocador,  List<JSObject> columnas) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException {
+        Class ejecutora=invocador.getClass();
+        if(!columnas.isEmpty()){
+            JSObject temp=columnas.remove(0);
+            Method metodo=ejecutora.getMethod("andValue", String.class, Object.class);
+            return insertInto(metodo.invoke(invocador, temp.getString("columName"), temp.get("value")), columnas);
+        }else{
+            Method metodo=ejecutora.getMethod("execute", null);
+            return (int) metodo.invoke(invocador, null);
+        }
+    }
+
+
+
+
 
 }
