@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -128,27 +129,25 @@ public class jbsqlutilsjs {
         return columnas;
     }
 
-    public Boolean createTable(String tableName, List<Column> columnas) throws ValorUndefined {
+    public Boolean createTable(String tableName, List<Column> columnas) throws ValorUndefined, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Boolean respuesta=false;
         CreateTable create=JBSqlUtils.createTable(tableName);
         Class ejecutora=create.getClass();
-
-
+        respuesta=createTable(ejecutora, columnas);
         return respuesta;
     }
 
-    public <T> Boolean createTable(T invocador,  List<Column> columnas) throws NoSuchMethodException {
+    public  Boolean createTable(Object invocador,  List<Column> columnas) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class ejecutora=invocador.getClass();
         if(!columnas.isEmpty()){
             Column temp=columnas.remove(0);
             Method metodo=ejecutora.getMethod("addColumn", Column.class);
-
-
-
+            return createTable(metodo.invoke(invocador, temp), columnas);
         }else{
-
+            Method metodo=ejecutora.getMethod("createTable", null);
+            return (Boolean) metodo.invoke(invocador, null);
         }
-        return false;
+
     }
 
 }

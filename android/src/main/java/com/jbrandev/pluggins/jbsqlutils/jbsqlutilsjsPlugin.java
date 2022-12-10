@@ -9,6 +9,9 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.josebran.LogsJB.LogsJB;
 import com.josebran.LogsJB.Numeracion.NivelLog;
 
+import java.util.List;
+
+import io.github.josecarlosbran.JBSqlUtils.Column;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.DataBaseUndefind;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.PropertiesDBUndefined;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.ValorUndefined;
@@ -47,15 +50,41 @@ public class jbsqlutilsjsPlugin extends Plugin {
         try{
             implementation.setearPropiedadesConexión(call.getObject("propertysConection"));
             String tableName=call.getString("tableName");
-            JSArray columnas=call.getArray("columnas");
+            JSArray columns=call.getArray("columnas");
             Boolean resultado=false;
-
-
+            List<Column> columnas=implementation.getColumns(columns);
+            if(columnas.isEmpty()||columnas.size()==0){
+                call.errorCallback("No especifico las columnas que debe tener la tabla.");
+            }
+            resultado=implementation.createTable(tableName, columnas);
             JSObject respuesta=new JSObject();
             respuesta.put("execute", resultado);
             call.resolve(respuesta);
         }catch (Exception e){
             LogsJB.fatal("Excepción disparada en el método createTable: " + e.toString());
+            LogsJB.fatal("Tipo de Excepción : " + e.getClass());
+            LogsJB.fatal("Causa de la Excepción : " + e.getCause());
+            LogsJB.fatal("Mensaje de la Excepción : " + e.getMessage());
+            LogsJB.fatal("Trace de la Excepción : " + e.getStackTrace());
+            call.reject(e.getLocalizedMessage(), null, e);
+        }
+    }
+
+
+
+
+
+    @PluginMethod
+    public void insertInto(PluginCall call){
+        try{
+            implementation.setearPropiedadesConexión(call.getObject("propertysConection"));
+            String tableName=call.getString("tableName");
+            JSArray valuesInsert=call.getArray("values");
+            
+
+            call.resolve();
+        }catch (Exception e){
+            LogsJB.fatal("Excepción disparada en el método insertInto: " + e.toString());
             LogsJB.fatal("Tipo de Excepción : " + e.getClass());
             LogsJB.fatal("Causa de la Excepción : " + e.getCause());
             LogsJB.fatal("Mensaje de la Excepción : " + e.getMessage());
