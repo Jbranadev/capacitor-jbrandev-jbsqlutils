@@ -19,6 +19,8 @@ import java.util.Objects;
 import io.github.josecarlosbran.JBSqlUtils.Column;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.CreateTable;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.InsertInto;
+import io.github.josecarlosbran.JBSqlUtils.DataBase.Set;
+import io.github.josecarlosbran.JBSqlUtils.DataBase.Update;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.Value;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.Constraint;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataBase;
@@ -169,6 +171,22 @@ public class jbsqlutilsjs {
             return (int) metodo.invoke(invocador, null);
         }
     }
+
+    public int update(String tableName, JSObject valueUpdate) throws ValorUndefined, JSONException {
+        Set invocador= JBSqlUtils.update(tableName).set(valueUpdate.getString("columName"), valueUpdate.get("columName"));
+
+
+        return 0;
+    }
+
+
+    public int update(Object invocador, JSObject valueUpdate) throws JSONException {
+        JSObject andValueUpdate=valueUpdate.getJSObject("andValueUpdate", null);
+        JSObject where=valueUpdate.getJSObject("where", null);
+
+        return 0;
+    }
+
 
 
 

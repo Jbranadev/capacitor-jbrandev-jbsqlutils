@@ -95,5 +95,26 @@ public class jbsqlutilsjsPlugin extends Plugin {
     }
 
 
+    @PluginMethod
+    public void update(PluginCall call){
+        try{
+            implementation.setearPropiedadesConexión(call.getObject("propertysConection"));
+            String tableName=call.getString("tableName");
+            JSObject valueUpdate=call.getObject("valueUpdate");
+            int resultado=0;
+            JSObject respuesta=new JSObject();
+            respuesta.put("rows_insert", resultado);
+            call.resolve(respuesta);
+        }catch (Exception e){
+            LogsJB.fatal("Excepción disparada en el método insertInto: " + e.toString());
+            LogsJB.fatal("Tipo de Excepción : " + e.getClass());
+            LogsJB.fatal("Causa de la Excepción : " + e.getCause());
+            LogsJB.fatal("Mensaje de la Excepción : " + e.getMessage());
+            LogsJB.fatal("Trace de la Excepción : " + e.getStackTrace());
+            call.reject(e.getLocalizedMessage(), null, e);
+        }
+    }
+
+
 
 }
