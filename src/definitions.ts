@@ -151,7 +151,7 @@ export interface DeleteOptions {
    * Agrega la logica de un filtro where al momento de eliminar registros en BD's
    * @type {?Where}
    */
-  where?: Where;
+  where: Where;
 
   /**
  * Define las propiedades de conexión a la BD's a la que se pegara JBSqlUtils

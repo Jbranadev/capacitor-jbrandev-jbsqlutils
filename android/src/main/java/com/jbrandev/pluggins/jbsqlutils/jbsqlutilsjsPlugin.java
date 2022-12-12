@@ -10,6 +10,7 @@ import com.josebran.LogsJB.LogsJB;
 import com.josebran.LogsJB.Numeracion.NivelLog;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.github.josecarlosbran.JBSqlUtils.Column;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.DataBaseUndefind;
@@ -55,6 +56,7 @@ public class jbsqlutilsjsPlugin extends Plugin {
             List<Column> columnas=implementation.getColumns(columns);
             if(columnas.isEmpty()||columnas.size()==0){
                 call.errorCallback("No especifico las columnas que debe tener la tabla.");
+                call.reject("No especifico las columnas que debe tener la tabla.");
             }
             resultado=implementation.createTable(tableName, columnas);
             JSObject respuesta=new JSObject();
@@ -115,6 +117,30 @@ public class jbsqlutilsjsPlugin extends Plugin {
         }
     }
 
+
+    @PluginMethod
+    public void delete(PluginCall call){
+        try{
+            implementation.setearPropiedadesConexión(call.getObject("propertysConection"));
+            String tableName=call.getString("tableName");
+            JSObject where=call.getObject("where", null);
+            if(Objects.isNull(where)){
+                call.errorCallback("No especifico la sentencia where de filtro para eliminar filas de la tabla: "+tableName);
+                call.reject("No especifico la sentencia where de filtro para eliminar filas de la tabla: "+tableName);
+            }
+            int resultado=implementation.delete(tableName, where);
+            JSObject respuesta=new JSObject();
+            respuesta.put("rows_delete", resultado);
+            call.resolve(respuesta);
+        }catch (Exception e){
+            LogsJB.fatal("Excepción disparada en el método delete: " + e.toString());
+            LogsJB.fatal("Tipo de Excepción : " + e.getClass());
+            LogsJB.fatal("Causa de la Excepción : " + e.getCause());
+            LogsJB.fatal("Mensaje de la Excepción : " + e.getMessage());
+            LogsJB.fatal("Trace de la Excepción : " + e.getStackTrace());
+            call.reject(e.getLocalizedMessage(), null, e);
+        }
+    }
 
 
 }

@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import io.github.josecarlosbran.JBSqlUtils.Column;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.CreateTable;
+import io.github.josecarlosbran.JBSqlUtils.DataBase.Delete;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.InsertInto;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.Set;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.Update;
@@ -194,6 +195,17 @@ public class jbsqlutilsjs {
             Method metodo=ejecutora.getMethod("execute", null);
             return (int) metodo.invoke(invocador, null);
         }
+    }
+
+    public int delete(String tableName, JSObject where) throws ValorUndefined, NoSuchMethodException, JSONException, InvocationTargetException, IllegalAccessException {
+        Delete delete = JBSqlUtils.delete(tableName);
+        Class ejecutora=delete.getClass();
+        if(Objects.isNull(where)){
+            return 0;
+        }
+        Method metodo=ejecutora.getMethod("where", String.class, Operator.class, Object.class);
+        return where(metodo.invoke(delete, where.getString("columName"), Operator.AND.getNumeracionforName(where.getString("operator")), where.get("value")), where);
+
     }
 
 
