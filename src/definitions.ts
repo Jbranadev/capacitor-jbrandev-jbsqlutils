@@ -250,6 +250,31 @@ export interface Where {
    * Valor contra el que se evaluara la columna
    */
   value: any
+
+  /**
+   * Agrega la logica de una sentencia And sobre la información proporcionada.
+   * @type {?And}
+   */
+  and?: And;
+
+  /**
+   * Agrega la logica de una sentencia Or sobre la información proporcionada.
+   * @type {?Or}
+   */
+  or?: Or;
+
+
+  /**
+   * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
+   * @type {?OrderBy}
+   */
+  orderBy?: OrderBy;
+
+  /**
+   * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
+   * @type {?Take}
+   */
+  take?: Take;
 }
 
 

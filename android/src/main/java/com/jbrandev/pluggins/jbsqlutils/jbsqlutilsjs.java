@@ -25,6 +25,8 @@ import io.github.josecarlosbran.JBSqlUtils.DataBase.Value;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.Constraint;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataBase;
 import io.github.josecarlosbran.JBSqlUtils.Enumerations.DataType;
+import io.github.josecarlosbran.JBSqlUtils.Enumerations.Operator;
+import io.github.josecarlosbran.JBSqlUtils.Enumerations.OrderType;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.DataBaseUndefind;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.PropertiesDBUndefined;
 import io.github.josecarlosbran.JBSqlUtils.Exceptions.ValorUndefined;
@@ -172,21 +174,52 @@ public class jbsqlutilsjs {
         }
     }
 
-    public int update(String tableName, JSObject valueUpdate) throws ValorUndefined, JSONException {
-        Set invocador= JBSqlUtils.update(tableName).set(valueUpdate.getString("columName"), valueUpdate.get("columName"));
-
-
-        return 0;
+    public int update(String tableName, JSObject valueUpdate) throws ValorUndefined, JSONException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        Set invocador= JBSqlUtils.update(tableName).set(valueUpdate.getString("columName"), valueUpdate.get("value"));
+        return update(invocador, valueUpdate);
     }
 
 
-    public int update(Object invocador, JSObject valueUpdate) throws JSONException {
+    public int update(Object invocador, JSObject valueUpdate) throws JSONException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         JSObject andValueUpdate=valueUpdate.getJSObject("andValueUpdate", null);
         JSObject where=valueUpdate.getJSObject("where", null);
-
-        return 0;
+        Class ejecutora=invocador.getClass();
+        if(!Objects.isNull(where)){
+            Method metodo=ejecutora.getMethod("where", String.class, Operator.class,Object.class);
+            return where(metodo.invoke(invocador, where.getString("columName"), Operator.AND.getNumeracionforName(where.getString("operator")), where.get("value")), where);
+        }else if(!Objects.isNull(andValueUpdate)){
+            Method metodo=ejecutora.getMethod("andSet", String.class, Object.class);
+            return update(metodo.invoke(invocador, andValueUpdate.getString("columName"), andValueUpdate.get("value") ), andValueUpdate);
+        }else{
+            Method metodo=ejecutora.getMethod("execute", null);
+            return (int) metodo.invoke(invocador, null);
+        }
     }
 
+
+    public int where(Object invocador, JSObject where) throws JSONException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class ejecutora=invocador.getClass();
+        JSObject and=where.getJSObject("and", null);
+        JSObject or=where.getJSObject("or", null);
+        JSObject orderBy=where.getJSObject("orderBy", null);
+        JSObject take=where.getJSObject("take", null);
+        if(!Objects.isNull(and)){
+            Method metodo=ejecutora.getMethod("and", String.class, Operator.class, Object.class);
+            return where(metodo.invoke(invocador, and.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(and.getString("operator")), and.get("value")), and);
+        }else if(!Objects.isNull(or)){
+            Method metodo=ejecutora.getMethod("or", String.class, Operator.class, Object.class);
+            return where(metodo.invoke(invocador, or.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(or.getString("operator")), or.get("value")), or);
+        }else if(!Objects.isNull(orderBy)){
+            Method metodo=ejecutora.getMethod("orderBy", String.class, OrderType.class);
+            return where(metodo.invoke(invocador, orderBy.getString("columName"), OrderType.ASC.getNumeracionforName(orderBy.getString("orderType"))), orderBy);
+        }else if(!Objects.isNull(take)){
+            Method metodo=ejecutora.getMethod("take", int.class);
+            return where(metodo.invoke(invocador, take.getInteger("limite", 1)), take);
+        }else{
+            Method metodo=ejecutora.getMethod("execute", null);
+            return (int) metodo.invoke(invocador, null);
+        }
+    }
 
 
 
