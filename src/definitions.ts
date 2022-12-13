@@ -44,7 +44,7 @@ export interface jbsqlutilsjsPlugin {
    * Obtiene los registros del tipo de dato proporcionado de la tabla especificada en el objeto selectOptions
    * @param selectOptions Define la logica de la sentencia Select a ejecutar
    */
-  select<T>(selectOptions: SelectOptions): Promise<T[]>;
+  select<T>(selectOptions: SelectOptions): Promise<{"rows": T[]}>;
 
 }
 

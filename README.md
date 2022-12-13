@@ -115,7 +115,7 @@ Elimina los registros de la tabla especificada de acuerdo a la logica proporcion
 ### select(...)
 
 ```typescript
-select<T>(selectOptions: SelectOptions) => Promise<T[]>
+select<T>(selectOptions: SelectOptions) => Promise<{ "rows": T[]; }>
 ```
 
 Obtiene los registros del tipo de dato proporcionado de la tabla especificada en el objeto selectOptions
@@ -124,7 +124,7 @@ Obtiene los registros del tipo de dato proporcionado de la tabla especificada en
 | ------------------- | ------------------------------------------------------- | -------------------------------------------------- |
 | **`selectOptions`** | <code><a href="#selectoptions">SelectOptions</a></code> | Define la logica de la sentencia Select a ejecutar |
 
-**Returns:** <code>Promise&lt;T[]&gt;</code>
+**Returns:** <code>Promise&lt;{ rows: T[]; }&gt;</code>
 
 --------------------
 

@@ -20,6 +20,7 @@ import io.github.josecarlosbran.JBSqlUtils.Column;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.CreateTable;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.Delete;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.InsertInto;
+import io.github.josecarlosbran.JBSqlUtils.DataBase.Select;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.Set;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.Update;
 import io.github.josecarlosbran.JBSqlUtils.DataBase.Value;
@@ -232,6 +233,51 @@ public class jbsqlutilsjs {
             return (int) metodo.invoke(invocador, null);
         }
     }
+
+
+    public List<JSONObject> select(String tableName, JSObject where, JSArray columnasJson) throws JSONException, DataBaseUndefind, PropertiesDBUndefined, ValorUndefined, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        List<String> columnas=null;
+        List<String> columnastemp=new ArrayList<>();
+        if(!Objects.isNull(columnasJson)){
+            columnas=new ArrayList<>();
+            columnas=columnasJson.toList();
+        }
+        Select select=JBSqlUtils.select(tableName);
+        Class ejecutora=select.getClass();
+        if(!Objects.isNull(where)){
+            Method metodo=ejecutora.getMethod("where", String.class, Operator.class,Object.class);
+            return where(metodo.invoke(select, where.getString("columName"), Operator.AND.getNumeracionforName(where.getString("operator")), where.get("value")), where, columnas);
+        }else{
+            Method metodo=ejecutora.getMethod("getInJsonObjects", columnastemp.getClass());
+            return (List<JSONObject>) metodo.invoke(select, columnas);
+        }
+    }
+
+    public List<JSONObject> where(Object invocador, JSObject where, List<String> columnas) throws JSONException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        List<String> columnastemp=new ArrayList<>();
+        Class ejecutora=invocador.getClass();
+        JSObject and=where.getJSObject("and", null);
+        JSObject or=where.getJSObject("or", null);
+        JSObject orderBy=where.getJSObject("orderBy", null);
+        JSObject take=where.getJSObject("take", null);
+        if(!Objects.isNull(and)){
+            Method metodo=ejecutora.getMethod("and", String.class, Operator.class, Object.class);
+            return where(metodo.invoke(invocador, and.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(and.getString("operator")), and.get("value")), and, columnas);
+        }else if(!Objects.isNull(or)){
+            Method metodo=ejecutora.getMethod("or", String.class, Operator.class, Object.class);
+            return where(metodo.invoke(invocador, or.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(or.getString("operator")), or.get("value")), or, columnas);
+        }else if(!Objects.isNull(orderBy)){
+            Method metodo=ejecutora.getMethod("orderBy", String.class, OrderType.class);
+            return where(metodo.invoke(invocador, orderBy.getString("columName"), OrderType.ASC.getNumeracionforName(orderBy.getString("orderType"))), orderBy, columnas);
+        }else if(!Objects.isNull(take)){
+            Method metodo=ejecutora.getMethod("take", int.class);
+            return where(metodo.invoke(invocador, take.getInteger("limite", 1)), take, columnas);
+        }else{
+            Method metodo=ejecutora.getMethod("getInJsonObjects", columnastemp.getClass());
+            return (List<JSONObject>) metodo.invoke(invocador, columnas);
+        }
+    }
+
 
 
 

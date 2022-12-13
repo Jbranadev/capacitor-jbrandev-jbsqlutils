@@ -9,6 +9,8 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.josebran.LogsJB.LogsJB;
 import com.josebran.LogsJB.Numeracion.NivelLog;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -134,6 +136,29 @@ public class jbsqlutilsjsPlugin extends Plugin {
             call.resolve(respuesta);
         }catch (Exception e){
             LogsJB.fatal("Excepción disparada en el método delete: " + e.toString());
+            LogsJB.fatal("Tipo de Excepción : " + e.getClass());
+            LogsJB.fatal("Causa de la Excepción : " + e.getCause());
+            LogsJB.fatal("Mensaje de la Excepción : " + e.getMessage());
+            LogsJB.fatal("Trace de la Excepción : " + e.getStackTrace());
+            call.reject(e.getLocalizedMessage(), null, e);
+        }
+    }
+
+
+
+    @PluginMethod
+    public void select(PluginCall call){
+        try{
+            implementation.setearPropiedadesConexión(call.getObject("propertysConection"));
+            String tableName=call.getString("tableName");
+            JSObject where=call.getObject("where", null);
+            JSArray columnasJson=call.getArray("columns", null);
+            List<JSONObject> respuestaLista=implementation.select(tableName, where, columnasJson);
+            JSObject respuesta=new JSObject();
+            respuesta.put("rows", respuestaLista);
+            call.resolve(respuesta);
+        }catch (Exception e){
+            LogsJB.fatal("Excepción disparada en el método select: " + e.toString());
             LogsJB.fatal("Tipo de Excepción : " + e.getClass());
             LogsJB.fatal("Causa de la Excepción : " + e.getCause());
             LogsJB.fatal("Mensaje de la Excepción : " + e.getMessage());
