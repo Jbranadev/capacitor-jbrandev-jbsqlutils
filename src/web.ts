@@ -4,27 +4,27 @@ import type { CreateTableOptions, CreateTableResult, DeleteOptions, DeleteResult
 
 export class jbsqlutilsjsWeb extends WebPlugin implements jbsqlutilsjsPlugin {
 
-  dropTableIfExist(droptableOptions: DropTableOptions): Promise<DropTableResult> {
+  dropTableIfExist(_droptableOptions: DropTableOptions): Promise<DropTableResult> {
     throw new Error('Method not implemented.');
   }
 
-  createTable(createtableOptions: CreateTableOptions): Promise<CreateTableResult> {
+  createTable(_createtableOptions: CreateTableOptions): Promise<CreateTableResult> {
     throw new Error('Method not implemented.');
   }
 
-  insertInto(insertOptions: InsertOptions): Promise<InsertResult> {
+  insertInto(_insertOptions: InsertOptions): Promise<InsertResult> {
     throw new Error('Method not implemented.');
   }
 
-  update(updateOptions: UpdateOptions): Promise<UpdateResult> {
+  update(_updateOptions: UpdateOptions): Promise<UpdateResult> {
     throw new Error('Method not implemented.');
   }
 
-  delete(deleteOptions: DeleteOptions): Promise<DeleteResult> {
+  delete(_deleteOptions: DeleteOptions): Promise<DeleteResult> {
     throw new Error('Method not implemented.');
   }
 
-  select<T>(selectOptions: SelectOptions): Promise<T[]> {
+  select<T>(_selectOptions: SelectOptions): Promise<{'rows': T[]}> {
     throw new Error('Method not implemented.');
   }
   
