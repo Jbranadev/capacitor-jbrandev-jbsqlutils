@@ -152,7 +152,7 @@ public class jbsqlutilsjsPlugin extends Plugin {
 
 
 
-    @PluginMethod
+    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
     public void select(PluginCall call){
         try{
             implementation.setearPropiedadesConexión(call.getObject("propertysConection"));
@@ -161,6 +161,7 @@ public class jbsqlutilsjsPlugin extends Plugin {
             JSArray columnasJson=call.getArray("columns", null);
             List<JSONObject> respuestaLista=implementation.select(tableName, where, columnasJson);
             JSObject respuesta=new JSObject();
+
             respuesta.put("rows", respuestaLista);
             call.resolve(respuesta);
         }catch (Exception e){

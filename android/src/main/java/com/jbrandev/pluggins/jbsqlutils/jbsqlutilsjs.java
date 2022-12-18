@@ -148,7 +148,7 @@ public class jbsqlutilsjs {
                 }
             }
             Constraint[] restricciones=restriccionesList.toArray(new Constraint[0]);
-            LogsJB.info("Cantidad de restricciones para la columna: "+restricciones.length);
+            LogsJB.debug("Cantidad de restricciones para la columna: "+restricciones.length);
             if(restricciones.length==0){
                 restricciones=null;
             }
@@ -186,14 +186,14 @@ public class jbsqlutilsjs {
 
     public int insertInto(String tableName, JSArray valuesarray) throws JSONException, ValorUndefined, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         List<JSObject> values=valuesarray.toList();
-        JSObject temp=values.remove(0);
+        JSONObject temp=values.remove(0);
         Value ejecutora= JBSqlUtils.insertInto(tableName).value(temp.getString("columName"), temp.get("value"));
         return insertInto(ejecutora, values);
     }
 
     public  int insertInto(Object invocador,  List<JSObject> columnas) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException {
         if(!columnas.isEmpty()){
-            JSObject temp=columnas.remove(0);
+            JSONObject temp=columnas.remove(0);
             Method metodo=getMethodforName(getMethodsModel(invocador),"andValue");
             return insertInto(metodo.invoke(invocador, temp.getString("columName"), temp.get("value")), columnas);
         }else{
