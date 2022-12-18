@@ -25,6 +25,14 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "x86_64"
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/java/com/jbrandev/pluggins/jbsqlutils']
+        }
     }
     buildTypes {
         release {
@@ -52,7 +60,7 @@ dependencies {
     implementation project(':capacitor-android')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation group: 'io.github.josecarlosbran', name: 'LogsJBSupport', version: '0.2'
-    implementation group: 'io.github.josecarlosbran', name: 'JBSqlUtils', version: '1.1.1'
+    implementation group: 'io.github.josecarlosbran', name: 'JBSqlUtils', version: '1.1.4'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"

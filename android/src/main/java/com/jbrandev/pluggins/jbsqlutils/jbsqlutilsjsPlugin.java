@@ -1,5 +1,7 @@
 package com.jbrandev.pluggins.jbsqlutils;
 
+import android.os.Build;
+
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -22,12 +24,16 @@ import io.github.josecarlosbran.JBSqlUtils.Exceptions.ValorUndefined;
 @CapacitorPlugin(name = "jbsqlutilsjs")
 public class jbsqlutilsjsPlugin extends Plugin {
 
-    private jbsqlutilsjs implementation = new jbsqlutilsjs();
+    private jbsqlutilsjs implementation;
 
     @Override
     public void load(){
         LogsJB.setGradeLog(NivelLog.INFO);
         LogsJB.setIsAndroid(true);
+        LogsJB.info("CPU ABI: "+ Build.CPU_ABI);
+        LogsJB.info("CPU ABI2: "+Build.CPU_ABI2);
+        System.loadLibrary("sqlitejdbc");
+        implementation=new jbsqlutilsjs(getContext());
     }
 
     @PluginMethod

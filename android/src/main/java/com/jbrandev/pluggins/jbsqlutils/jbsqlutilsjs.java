@@ -2,6 +2,10 @@ package com.jbrandev.pluggins.jbsqlutils;
 
 import static io.github.josecarlosbran.JBSqlUtils.Utilities.UtilitiesJB.stringIsNullOrEmpty;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.josebran.LogsJB.LogsJB;
@@ -10,8 +14,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +43,11 @@ import io.github.josecarlosbran.JBSqlUtils.JBSqlUtils;
 
 public class jbsqlutilsjs {
     //Definicion de metodos
+    Context contexto;
+
+    jbsqlutilsjs(Context context){
+        this.contexto=context;
+    }
 
 
     /**
@@ -46,17 +58,30 @@ public class jbsqlutilsjs {
      * en el caso de BD's diferentes a SQLite, si falta el puerto, host, user, password, lanzara esta excepción
      */
     public void setearPropiedadesConexión(JSObject propertysConection) throws DataBaseUndefind, PropertiesDBUndefined {
-        String databasetypestring=propertysConection.getString("dataBaseType");
-        String dataBase=propertysConection.getString("dataBase");
-        String port=propertysConection.getString("port");
-        String host=propertysConection.getString("host");
-        String user=propertysConection.getString("user");
-        String password=propertysConection.getString("password");
+        String databasetypestring=propertysConection.getString("dataBaseType", null);
+        String dataBase=propertysConection.getString("dataBase", null);
+        String port=propertysConection.getString("port", null);
+        String host=propertysConection.getString("host", null);
+        String user=propertysConection.getString("user", null);
+        String password=propertysConection.getString("password", null);
         if(!stringIsNullOrEmpty(databasetypestring)){
             JBSqlUtils.setDataBaseTypeGlobal(DataBase.SQLite.getNumeracionforName(databasetypestring));
+            if(DataBase.SQLite.getNumeracionforName(databasetypestring)==DataBase.SQLite){
+                String separador = System.getProperty("file.separator");
+                dataBase.replace("/", separador);
+                String rutaBase= null;
+                File directorioBase=contexto.getCacheDir();
+                if(!directorioBase.exists()){
+                    directorioBase.mkdir();
+                }
+                File directorioDB=new File(directorioBase, dataBase);
+                rutaBase = directorioBase.getPath();
+                LogsJB.info("Ruta base de BD's SQLite: "+rutaBase);
+                LogsJB.info("Ruta de BD's SQLite: "+directorioDB.getPath());
+                dataBase=directorioDB.getPath();
+            }
             if(!stringIsNullOrEmpty(dataBase)){
                 JBSqlUtils.setDataBaseGlobal(dataBase);
-
                 if(!stringIsNullOrEmpty(port)){
                     JBSqlUtils.setPortGlobal(port);
                 }else{
@@ -103,20 +128,24 @@ public class jbsqlutilsjs {
     public List<Column> getColumns(JSArray columnsarray) throws JSONException {
         List<Column> columnas=new ArrayList<>();
         List<JSObject> colums=columnsarray.toList();
-        for(JSObject column:colums){
-            String name=column.getString("name");
-            String default_value=column.getString("default_value");
-            String tempType=column.getString("dataTypeSQL");
+        for(int j=0; j<colums.size();j++){
+            JSONObject column=colums.get(j);
+            String name=column.optString("name");
+            String default_value=column.optString("default_value");
+            String tempType=column.optString("dataTypeSQL");
             DataType tipo= DataType.CHAR.getNumeracionforName(tempType);
             //Obtenemos las restricciones
-            JSONArray restriccionesJson=column.getJSONArray("restriccions");
+            JSONArray restriccionesJson=column.optJSONArray("restriccions");
             List<String> restriccions=new ArrayList<>();
-            for(int i=0; i<restriccionesJson.length(); i++){
-                restriccions.add(restriccionesJson.getString(i));
-            }
             List<Constraint> restriccionesList=new ArrayList<>();
-            for(String restricciontemp:restriccions){
-                restriccionesList.add(Constraint.AUTO_INCREMENT.getNumeracionforName(restricciontemp));
+            if(!Objects.isNull(restriccionesJson)){
+                for(int i=0; i<restriccionesJson.length(); i++){
+                    restriccions.add(restriccionesJson.getString(i));
+                }
+
+                for(String restricciontemp:restriccions){
+                    restriccionesList.add(Constraint.AUTO_INCREMENT.getNumeracionforName(restricciontemp));
+                }
             }
             Constraint[] restricciones=restriccionesList.toArray(new Constraint[0]);
             LogsJB.info("Cantidad de restricciones para la columna: "+restricciones.length);
@@ -140,19 +169,17 @@ public class jbsqlutilsjs {
     public Boolean createTable(String tableName, List<Column> columnas) throws ValorUndefined, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Boolean respuesta=false;
         CreateTable create=JBSqlUtils.createTable(tableName);
-        Class ejecutora=create.getClass();
-        respuesta=createTable(ejecutora, columnas);
+        respuesta=createTable(create, columnas);
         return respuesta;
     }
 
     public  Boolean createTable(Object invocador,  List<Column> columnas) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class ejecutora=invocador.getClass();
         if(!columnas.isEmpty()){
             Column temp=columnas.remove(0);
-            Method metodo=ejecutora.getMethod("addColumn", Column.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"addColumn");
             return createTable(metodo.invoke(invocador, temp), columnas);
         }else{
-            Method metodo=ejecutora.getMethod("createTable", null);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"createTable");
             return (Boolean) metodo.invoke(invocador, null);
         }
     }
@@ -165,13 +192,12 @@ public class jbsqlutilsjs {
     }
 
     public  int insertInto(Object invocador,  List<JSObject> columnas) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, JSONException {
-        Class ejecutora=invocador.getClass();
         if(!columnas.isEmpty()){
             JSObject temp=columnas.remove(0);
-            Method metodo=ejecutora.getMethod("andValue", String.class, Object.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"andValue");
             return insertInto(metodo.invoke(invocador, temp.getString("columName"), temp.get("value")), columnas);
         }else{
-            Method metodo=ejecutora.getMethod("execute", null);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"execute");
             return (int) metodo.invoke(invocador, null);
         }
     }
@@ -185,51 +211,48 @@ public class jbsqlutilsjs {
     public int update(Object invocador, JSObject valueUpdate) throws JSONException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         JSObject andValueUpdate=valueUpdate.getJSObject("andValueUpdate", null);
         JSObject where=valueUpdate.getJSObject("where", null);
-        Class ejecutora=invocador.getClass();
         if(!Objects.isNull(where)){
-            Method metodo=ejecutora.getMethod("where", String.class, Operator.class,Object.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"where");
             return where(metodo.invoke(invocador, where.getString("columName"), Operator.AND.getNumeracionforName(where.getString("operator")), where.get("value")), where);
         }else if(!Objects.isNull(andValueUpdate)){
-            Method metodo=ejecutora.getMethod("andSet", String.class, Object.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"andSet");
             return update(metodo.invoke(invocador, andValueUpdate.getString("columName"), andValueUpdate.get("value") ), andValueUpdate);
         }else{
-            Method metodo=ejecutora.getMethod("execute", null);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"execute");
             return (int) metodo.invoke(invocador, null);
         }
     }
 
     public int delete(String tableName, JSObject where) throws ValorUndefined, NoSuchMethodException, JSONException, InvocationTargetException, IllegalAccessException {
         Delete delete = JBSqlUtils.delete(tableName);
-        Class ejecutora=delete.getClass();
         if(Objects.isNull(where)){
             return 0;
         }
-        Method metodo=ejecutora.getMethod("where", String.class, Operator.class, Object.class);
+        Method metodo=getMethodforName(getMethodsModel(delete),"where");
         return where(metodo.invoke(delete, where.getString("columName"), Operator.AND.getNumeracionforName(where.getString("operator")), where.get("value")), where);
 
     }
 
 
     public int where(Object invocador, JSObject where) throws JSONException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class ejecutora=invocador.getClass();
         JSObject and=where.getJSObject("and", null);
         JSObject or=where.getJSObject("or", null);
         JSObject orderBy=where.getJSObject("orderBy", null);
         JSObject take=where.getJSObject("take", null);
         if(!Objects.isNull(and)){
-            Method metodo=ejecutora.getMethod("and", String.class, Operator.class, Object.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"and");
             return where(metodo.invoke(invocador, and.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(and.getString("operator")), and.get("value")), and);
         }else if(!Objects.isNull(or)){
-            Method metodo=ejecutora.getMethod("or", String.class, Operator.class, Object.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"or");
             return where(metodo.invoke(invocador, or.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(or.getString("operator")), or.get("value")), or);
         }else if(!Objects.isNull(orderBy)){
-            Method metodo=ejecutora.getMethod("orderBy", String.class, OrderType.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"orderBy");
             return where(metodo.invoke(invocador, orderBy.getString("columName"), OrderType.ASC.getNumeracionforName(orderBy.getString("orderType"))), orderBy);
         }else if(!Objects.isNull(take)){
-            Method metodo=ejecutora.getMethod("take", int.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"take");
             return where(metodo.invoke(invocador, take.getInteger("limite", 1)), take);
         }else{
-            Method metodo=ejecutora.getMethod("execute", null);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"execute");
             return (int) metodo.invoke(invocador, null);
         }
     }
@@ -243,40 +266,85 @@ public class jbsqlutilsjs {
             columnas=columnasJson.toList();
         }
         Select select=JBSqlUtils.select(tableName);
-        Class ejecutora=select.getClass();
         if(!Objects.isNull(where)){
-            Method metodo=ejecutora.getMethod("where", String.class, Operator.class,Object.class);
+            Method metodo=getMethodforName(getMethodsModel(select),"where");
             return where(metodo.invoke(select, where.getString("columName"), Operator.AND.getNumeracionforName(where.getString("operator")), where.get("value")), where, columnas);
         }else{
-            Method metodo=ejecutora.getMethod("getInJsonObjects", columnastemp.getClass());
+            Method metodo=getMethodforName(getMethodsModel(select),"getInJsonObjects");
             return (List<JSONObject>) metodo.invoke(select, columnas);
         }
     }
 
     public List<JSONObject> where(Object invocador, JSObject where, List<String> columnas) throws JSONException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         List<String> columnastemp=new ArrayList<>();
-        Class ejecutora=invocador.getClass();
         JSObject and=where.getJSObject("and", null);
         JSObject or=where.getJSObject("or", null);
         JSObject orderBy=where.getJSObject("orderBy", null);
         JSObject take=where.getJSObject("take", null);
         if(!Objects.isNull(and)){
-            Method metodo=ejecutora.getMethod("and", String.class, Operator.class, Object.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"and");
             return where(metodo.invoke(invocador, and.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(and.getString("operator")), and.get("value")), and, columnas);
         }else if(!Objects.isNull(or)){
-            Method metodo=ejecutora.getMethod("or", String.class, Operator.class, Object.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"or");
             return where(metodo.invoke(invocador, or.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(or.getString("operator")), or.get("value")), or, columnas);
         }else if(!Objects.isNull(orderBy)){
-            Method metodo=ejecutora.getMethod("orderBy", String.class, OrderType.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"orderBy");
             return where(metodo.invoke(invocador, orderBy.getString("columName"), OrderType.ASC.getNumeracionforName(orderBy.getString("orderType"))), orderBy, columnas);
         }else if(!Objects.isNull(take)){
-            Method metodo=ejecutora.getMethod("take", int.class);
+            Method metodo=getMethodforName(getMethodsModel(invocador),"take");
             return where(metodo.invoke(invocador, take.getInteger("limite", 1)), take, columnas);
         }else{
-            Method metodo=ejecutora.getMethod("getInJsonObjects", columnastemp.getClass());
+            Method metodo=getMethodforName(getMethodsModel(invocador),"getInJsonObjects");
             return (List<JSONObject>) metodo.invoke(invocador, columnas);
         }
     }
+
+
+    public List<Method> getMethodsModel(Object invocador) {
+        Method[] metodos = invocador.getClass().getMethods();
+        List<Method> result = new ArrayList<>();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Los muestro en consola
+            for (Method metodo : metodos) {
+                String clase = metodo.getDeclaringClass().getSimpleName();
+                String returntype = metodo.getReturnType().getSimpleName();
+                Parameter[] parametros = new Parameter[0];
+
+                parametros = metodo.getParameters();
+
+                String ParametroType = "";
+                if (parametros.length >= 1) {
+                    ParametroType = parametros[0].getType().getSimpleName();
+                }
+
+                if ((clase.equalsIgnoreCase("Object")
+                        || clase.equalsIgnoreCase("Methods_Conexion"))
+                    //&& !(returntype.equalsIgnoreCase("Column") ||ParametroType.equalsIgnoreCase("Column"))
+                ) {
+
+                } else {
+                    //System.out.println(metodo.getName() + "   " + metodo.getDeclaringClass() + "  " + returntype+"  " + ParametroType);
+                    result.add(metodo);
+                }
+                //System.out.println(metodo.getName()+"   "+metodo.getDeclaringClass()+"  "+returntype);
+            }
+        }
+        return result;
+    }
+
+
+    public Method getMethodforName(List<Method> metodos, String nombre){
+        Method result=null;
+        for(Method metodo:metodos){
+            if(metodo.getName().equalsIgnoreCase(nombre)){
+                return metodo;
+            }
+        }
+
+        return result;
+    }
+
+
 
 
 
