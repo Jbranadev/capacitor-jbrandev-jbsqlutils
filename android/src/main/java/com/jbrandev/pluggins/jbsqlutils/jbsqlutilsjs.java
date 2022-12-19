@@ -203,6 +203,7 @@ public class jbsqlutilsjs {
     }
 
     public int update(String tableName, JSObject valueUpdate) throws ValorUndefined, JSONException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        LogsJB.debug("Value recibido: "+valueUpdate.get("value"));
         Set invocador= JBSqlUtils.update(tableName).set(valueUpdate.getString("columName"), valueUpdate.get("value"));
         return update(invocador, valueUpdate);
     }
@@ -215,6 +216,7 @@ public class jbsqlutilsjs {
             Method metodo=getMethodforName(getMethodsModel(invocador),"where");
             return where(metodo.invoke(invocador, where.getString("columName"), Operator.AND.getNumeracionforName(where.getString("operator")), where.get("value")), where);
         }else if(!Objects.isNull(andValueUpdate)){
+            LogsJB.debug("Value recibido: "+andValueUpdate.get("value"));
             Method metodo=getMethodforName(getMethodsModel(invocador),"andSet");
             return update(metodo.invoke(invocador, andValueUpdate.getString("columName"), andValueUpdate.get("value") ), andValueUpdate);
         }else{
