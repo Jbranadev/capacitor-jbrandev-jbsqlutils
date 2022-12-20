@@ -1,6 +1,41 @@
 # capacitor-jbrandev-jbsqlutils
 
-ORM JBSqlUtils
+ORM JBSqlUtils es un ORM desarrollado en java por José Carlos Alfredo Bran Aguirre, que permite gestionar BD's SQLite,
+MySQL,
+PostgreSQL y SQLServer, de una manera fácil y rápida sin interrumpir la ejecución del hilo principal del programa,
+lo cual la hace un potente ORM, por medio del cual tendrá acceso a un CRUD, configurando únicamente la conexión del
+modelo,
+los atributos que posee la tabla en BD's cómo variables que pertenecerán al modelo en su aplicación.
+
+Para mayor información sobre cómo utilizar JBSqlUtils desde Ionic visitar el siguiente enlace:
+<https://github.com/Jbranadev/capacitor-jbrandev-jbsqlutils/blob/main/README.md>
+
+
+Para mayor información sobre cómo utilizar JBSqlUtils desde Java visitar el siguiente enlace:
+<https://github.com/Jbranadev/JBSqlUtils/blob/master/Readme.md>
+
+* * *
+
+## Estado del Proyecto :atom:
+
+JBSqlUtils actualmente está en una etapa de desarrollo continuo, por lo cual sus observaciones y recomendaciones,
+son bienvenidas para mejorar el proyecto.
+***
+
+## Información importante para poder usar JBSqlUtils en IONIC 
+
+Para poder utilizar JBSqlUtils en Ionic es importante realizar la siguiente configuración en su aplicación.
+
+1. Ya incluido JBSqlUtils en su aplicación, en android studio, visualizar los archivos en la vista Project, expandiendo el modulo capacitor-jbrandev-jbsqlutils, copiar la carpeta libs a la carpeta principal de su aplicación, de modo que quede en el mismo nivel que la carpeta src, como lo muestra la siguiente imagen.
+
+![](Imagenes/Libs.jpg)
+
+2. Una vez realizado el paso 1, abrir el archivo build.gradle, modificarlo para que contenga la configuración descrita en la siguiente imagen, agregamos lo filtros ndk dentro de la defaultConfig de nuestra aplicación y los sourceSets en el mismo nivel que la defaultConfig.
+
+![](Imagenes/BuildConfig.jpg)
+
+
+***
 
 ## Install
 
