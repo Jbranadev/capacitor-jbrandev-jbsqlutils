@@ -299,15 +299,17 @@ Define la columna a actualizar con el valor proporcionado en la tabla especifica
 Proporciona la logica de una sentencia <a href="#where">Where</a> sobre la información que contiene esta interface, añadiendo la capacidad
 de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
 
-| Prop            | Type                                          | Description                                                                                  |
-| --------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **`columName`** | <code>string</code>                           | Nombre de la columna sobre la cual se evaluara la sentencia WHERE                            |
-| **`operator`**  | <code><a href="#operator">Operator</a></code> | Operador sobre el cual se evalura la columna respecto al valor proporcionado                 |
-| **`value`**     | <code>any</code>                              | Valor contra el que se evaluara la columna                                                   |
-| **`and`**       | <code><a href="#and">And</a></code>           | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
-| **`or`**        | <code><a href="#or">Or</a></code>             | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
-| **`orderBy`**   | <code><a href="#orderby">OrderBy</a></code>   | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
-| **`take`**      | <code><a href="#take">Take</a></code>         | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| Prop                  | Type                                                        | Description                                                                                  |
+| --------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **`columName`**       | <code>string</code>                                         | Nombre de la columna sobre la cual se evaluara la sentencia WHERE                            |
+| **`operator`**        | <code><a href="#operator">Operator</a></code>               | Operador sobre el cual se evalura la columna respecto al valor proporcionado                 |
+| **`value`**           | <code>any</code>                                            | Valor contra el que se evaluara la columna                                                   |
+| **`and`**             | <code><a href="#and">And</a></code>                         | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
+| **`or`**              | <code><a href="#or">Or</a></code>                           | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
+| **`orderBy`**         | <code><a href="#orderby">OrderBy</a></code>                 | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
+| **`take`**            | <code><a href="#take">Take</a></code>                       | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| **`openParentecis`**  | <code><a href="#openparentesis">OpenParentesis</a></code>   | Puede aperturar un parentecis para filtrar de una mejor manera los registros                 |
+| **`closeParentecis`** | <code><a href="#closeparentesis">CloseParentesis</a></code> | Puede cerrar un parentecis para filtrar de una mejor manera los registros                    |
 
 
 #### And
@@ -315,15 +317,17 @@ de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
 Proporciona la logica de una sentencia <a href="#and">And</a> sobre la información que contiene esta interface, añadiendo la capacidad
 de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
 
-| Prop            | Type                                          | Description                                                                                  |
-| --------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **`columName`** | <code>string</code>                           | Nombre de la columna sobre la cual se evaluara la sentencia AND                              |
-| **`operator`**  | <code><a href="#operator">Operator</a></code> | Operador sobre el cual se evalura la columna respecto al valor proporcionado                 |
-| **`value`**     | <code>any</code>                              | Valor contra el que se evaluara la columna                                                   |
-| **`and`**       | <code><a href="#and">And</a></code>           | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
-| **`or`**        | <code><a href="#or">Or</a></code>             | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
-| **`orderBy`**   | <code><a href="#orderby">OrderBy</a></code>   | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
-| **`take`**      | <code><a href="#take">Take</a></code>         | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| Prop                  | Type                                                        | Description                                                                                  |
+| --------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **`columName`**       | <code>string</code>                                         | Nombre de la columna sobre la cual se evaluara la sentencia AND                              |
+| **`operator`**        | <code><a href="#operator">Operator</a></code>               | Operador sobre el cual se evalura la columna respecto al valor proporcionado                 |
+| **`value`**           | <code>any</code>                                            | Valor contra el que se evaluara la columna                                                   |
+| **`and`**             | <code><a href="#and">And</a></code>                         | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
+| **`or`**              | <code><a href="#or">Or</a></code>                           | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
+| **`orderBy`**         | <code><a href="#orderby">OrderBy</a></code>                 | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
+| **`take`**            | <code><a href="#take">Take</a></code>                       | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| **`openParentecis`**  | <code><a href="#openparentesis">OpenParentesis</a></code>   | Puede aperturar un parentecis para filtrar de una mejor manera los registros                 |
+| **`closeParentecis`** | <code><a href="#closeparentesis">CloseParentesis</a></code> | Puede cerrar un parentecis para filtrar de una mejor manera los registros                    |
 
 
 #### Or
@@ -331,15 +335,17 @@ de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
 Proporciona la logica de una sentencia <a href="#or">Or</a> sobre la información que contiene esta interface, añadiendo la capacidad
 de poder filtrar por medio de las sentencias AND, OR, TAKE Y ORDER BY
 
-| Prop            | Type                                          | Description                                                                                  |
-| --------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **`columName`** | <code>string</code>                           | Nombre de la columna sobre la cual se evaluara la sentencia OR                               |
-| **`operator`**  | <code><a href="#operator">Operator</a></code> | Operador sobre el cual se evalura la columna respecto al valor proporcionado                 |
-| **`value`**     | <code>any</code>                              | Valor contra el que se evaluara la columna                                                   |
-| **`and`**       | <code><a href="#and">And</a></code>           | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
-| **`or`**        | <code><a href="#or">Or</a></code>             | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
-| **`orderBy`**   | <code><a href="#orderby">OrderBy</a></code>   | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
-| **`take`**      | <code><a href="#take">Take</a></code>         | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| Prop                  | Type                                                        | Description                                                                                  |
+| --------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **`columName`**       | <code>string</code>                                         | Nombre de la columna sobre la cual se evaluara la sentencia OR                               |
+| **`operator`**        | <code><a href="#operator">Operator</a></code>               | Operador sobre el cual se evalura la columna respecto al valor proporcionado                 |
+| **`value`**           | <code>any</code>                                            | Valor contra el que se evaluara la columna                                                   |
+| **`and`**             | <code><a href="#and">And</a></code>                         | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
+| **`or`**              | <code><a href="#or">Or</a></code>                           | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
+| **`orderBy`**         | <code><a href="#orderby">OrderBy</a></code>                 | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
+| **`take`**            | <code><a href="#take">Take</a></code>                       | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| **`openParentecis`**  | <code><a href="#openparentesis">OpenParentesis</a></code>   | Puede aperturar un parentecis para filtrar de una mejor manera los registros                 |
+| **`closeParentecis`** | <code><a href="#closeparentesis">CloseParentesis</a></code> | Puede cerrar un parentecis para filtrar de una mejor manera los registros                    |
 
 
 #### OrderBy
@@ -361,6 +367,39 @@ Define un limite de registros a tomar dentro de una sentencia con filtro <a href
 | Prop         | Type                | Description                                                                                             |
 | ------------ | ------------------- | ------------------------------------------------------------------------------------------------------- |
 | **`limite`** | <code>number</code> | Cantidad Maxima de Registros que se desea tomar al filtrar con una sentencia <a href="#where">Where</a> |
+
+
+#### OpenParentesis
+
+Agrega la logica de agregar un operador previo y parentecis para filtrar de una mejor manera las consultas
+
+| Prop                  | Type                                                        | Description                                                                                  |
+| --------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **`operatorPrev`**    | <code><a href="#operator">Operator</a></code>               | Operador previo a colocar antes de aperturar el parentecis                                   |
+| **`columName`**       | <code>string</code>                                         | Nombre de la columna sobre la cual se evaluara la sentencia AND                              |
+| **`operator`**        | <code><a href="#operator">Operator</a></code>               | Operador sobre el cual se evalura la columna respecto al valor proporcionado                 |
+| **`value`**           | <code>any</code>                                            | Valor contra el que se evaluara la columna                                                   |
+| **`and`**             | <code><a href="#and">And</a></code>                         | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
+| **`or`**              | <code><a href="#or">Or</a></code>                           | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
+| **`orderBy`**         | <code><a href="#orderby">OrderBy</a></code>                 | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
+| **`take`**            | <code><a href="#take">Take</a></code>                       | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| **`openParentecis`**  | <code><a href="#openparentesis">OpenParentesis</a></code>   | Puede aperturar un parentecis para filtrar de una mejor manera los registros                 |
+| **`closeParentecis`** | <code><a href="#closeparentesis">CloseParentesis</a></code> | Puede cerrar un parentecis para filtrar de una mejor manera los registros                    |
+
+
+#### CloseParentesis
+
+Proporciona la logica de un cierre de parentesis
+
+| Prop                  | Type                                                        | Description                                                                                  |
+| --------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **`operatorPost`**    | <code><a href="#operator">Operator</a></code>               | Operador posterior a colocar antes de aperturar el parentecis                                |
+| **`and`**             | <code><a href="#and">And</a></code>                         | Agrega la logica de una sentencia <a href="#and">And</a> sobre la información proporcionada. |
+| **`or`**              | <code><a href="#or">Or</a></code>                           | Agrega la logica de una sentencia <a href="#or">Or</a> sobre la información proporcionada.   |
+| **`orderBy`**         | <code><a href="#orderby">OrderBy</a></code>                 | Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where      |
+| **`take`**            | <code><a href="#take">Take</a></code>                       | Cantidad maxima de registros a tomar dentro de una sentencia con filtro where                |
+| **`openParentecis`**  | <code><a href="#openparentesis">OpenParentesis</a></code>   | Puede aperturar un parentecis para filtrar de una mejor manera los registros                 |
+| **`closeParentecis`** | <code><a href="#closeparentesis">CloseParentesis</a></code> | Puede cerrar un parentecis para filtrar de una mejor manera los registros                    |
 
 
 #### DeleteResult
