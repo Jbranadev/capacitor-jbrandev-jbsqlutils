@@ -281,13 +281,13 @@ export interface Where {
    * Puede aperturar un parentecis para filtrar de una mejor manera los registros
    * @type {OpenParentesis}
    */
-   openParentecis:OpenParentesis;
+   openParentecis?:OpenParentesis;
 
    /**
     * Puede cerrar un parentecis para filtrar de una mejor manera los registros
     * @type {CloseParentesis}
     */
-   closeParentecis:CloseParentesis;
+   closeParentecis?:CloseParentesis;
 
 }
 
@@ -354,13 +354,13 @@ export interface OpenParentesis{
    * Puede aperturar un parentecis para filtrar de una mejor manera los registros
    * @type {OpenParentesis}
    */
-    openParentecis:OpenParentesis;
+    openParentecis?:OpenParentesis;
 
     /**
      * Puede cerrar un parentecis para filtrar de una mejor manera los registros
      * @type {CloseParentesis}
      */
-    closeParentecis:CloseParentesis;
+    closeParentecis?:CloseParentesis;
 
 }
 
@@ -406,13 +406,13 @@ export interface CloseParentesis{
    * Puede aperturar un parentecis para filtrar de una mejor manera los registros
    * @type {OpenParentesis}
    */
-    openParentecis:OpenParentesis;
+    openParentecis?:OpenParentesis;
 
     /**
      * Puede cerrar un parentecis para filtrar de una mejor manera los registros
      * @type {CloseParentesis}
      */
-    closeParentecis:CloseParentesis;
+    closeParentecis?:CloseParentesis;
 
 }
 
@@ -469,13 +469,13 @@ export interface And {
    * Puede aperturar un parentecis para filtrar de una mejor manera los registros
    * @type {OpenParentesis}
    */
-   openParentecis:OpenParentesis;
+   openParentecis?:OpenParentesis;
 
    /**
     * Puede cerrar un parentecis para filtrar de una mejor manera los registros
     * @type {CloseParentesis}
     */
-   closeParentecis:CloseParentesis;
+   closeParentecis?:CloseParentesis;
 
 
 }
@@ -531,13 +531,13 @@ export interface Or {
    * Puede aperturar un parentecis para filtrar de una mejor manera los registros
    * @type {OpenParentesis}
    */
-   openParentecis:OpenParentesis;
+   openParentecis?:OpenParentesis;
 
    /**
     * Puede cerrar un parentecis para filtrar de una mejor manera los registros
     * @type {CloseParentesis}
     */
-   closeParentecis:CloseParentesis;
+   closeParentecis?:CloseParentesis;
 
 }
 
