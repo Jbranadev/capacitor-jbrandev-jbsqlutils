@@ -275,8 +275,146 @@ export interface Where {
    * @type {?Take}
    */
   take?: Take;
+
+
+  /**
+   * Puede aperturar un parentecis para filtrar de una mejor manera los registros
+   * @type {OpenParentesis}
+   */
+   openParentecis?:OpenParentesis;
+
+   /**
+    * Puede cerrar un parentecis para filtrar de una mejor manera los registros
+    * @type {CloseParentesis}
+    */
+   closeParentecis?:CloseParentesis;
+
 }
 
+
+
+
+/**
+ * Agrega la logica de agregar un operador previo y parentecis para filtrar de una mejor manera las consultas
+ */
+export interface OpenParentesis{
+
+  /**
+   * Operador previo a colocar antes de aperturar el parentecis 
+   * @type {Operator}
+   */
+   operatorPrev?: Operator;
+
+  /**
+   * Nombre de la columna sobre la cual se evaluara la sentencia AND
+   * @type {string}
+   */
+  columName: string;
+
+  /**
+   * Operador sobre el cual se evalura la columna respecto al valor proporcionado
+   * @type {Operator}
+   */
+  operator: Operator;
+
+  /**
+   * Valor contra el que se evaluara la columna
+   */
+  value: any
+
+
+
+  /**
+   * Agrega la logica de una sentencia And sobre la información proporcionada.
+   * @type {?And}
+   */
+   and?: And;
+
+   /**
+    * Agrega la logica de una sentencia Or sobre la información proporcionada.
+    * @type {?Or}
+    */
+   or?: Or;
+ 
+ 
+   /**
+    * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
+    * @type {?OrderBy}
+    */
+   orderBy?: OrderBy;
+ 
+   /**
+    * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
+    * @type {?Take}
+    */
+   take?: Take;
+
+
+   /**
+   * Puede aperturar un parentecis para filtrar de una mejor manera los registros
+   * @type {OpenParentesis}
+   */
+    openParentecis?:OpenParentesis;
+
+    /**
+     * Puede cerrar un parentecis para filtrar de una mejor manera los registros
+     * @type {CloseParentesis}
+     */
+    closeParentecis?:CloseParentesis;
+
+}
+
+
+/**
+ * Proporciona la logica de un cierre de parentesis
+ */
+export interface CloseParentesis{
+
+  /**
+   * Operador posterior a colocar antes de aperturar el parentecis 
+   * @type {Operator}
+   */
+ operatorPost?: Operator;
+
+  /**
+   * Agrega la logica de una sentencia And sobre la información proporcionada.
+   * @type {?And}
+   */
+   and?: And;
+
+   /**
+    * Agrega la logica de una sentencia Or sobre la información proporcionada.
+    * @type {?Or}
+    */
+   or?: Or;
+ 
+ 
+   /**
+    * Tipo de ordenamiento que deseamos se aplique al realizar una sentencia con filtro where
+    * @type {?OrderBy}
+    */
+   orderBy?: OrderBy;
+ 
+   /**
+    * Cantidad maxima de registros a tomar dentro de una sentencia con filtro where
+    * @type {?Take}
+    */
+   take?: Take;
+
+
+   /**
+   * Puede aperturar un parentecis para filtrar de una mejor manera los registros
+   * @type {OpenParentesis}
+   */
+    openParentecis?:OpenParentesis;
+
+    /**
+     * Puede cerrar un parentecis para filtrar de una mejor manera los registros
+     * @type {CloseParentesis}
+     */
+    closeParentecis?:CloseParentesis;
+
+}
 
 /**
  * Proporciona la logica de una sentencia And sobre la información que contiene esta interface, añadiendo la capacidad
@@ -327,6 +465,19 @@ export interface And {
   take?: Take;
 
 
+  /**
+   * Puede aperturar un parentecis para filtrar de una mejor manera los registros
+   * @type {OpenParentesis}
+   */
+   openParentecis?:OpenParentesis;
+
+   /**
+    * Puede cerrar un parentecis para filtrar de una mejor manera los registros
+    * @type {CloseParentesis}
+    */
+   closeParentecis?:CloseParentesis;
+
+
 }
 
 
@@ -375,6 +526,18 @@ export interface Or {
    */
   take?: Take;
 
+
+  /**
+   * Puede aperturar un parentecis para filtrar de una mejor manera los registros
+   * @type {OpenParentesis}
+   */
+   openParentecis?:OpenParentesis;
+
+   /**
+    * Puede cerrar un parentecis para filtrar de una mejor manera los registros
+    * @type {CloseParentesis}
+    */
+   closeParentecis?:CloseParentesis;
 
 }
 

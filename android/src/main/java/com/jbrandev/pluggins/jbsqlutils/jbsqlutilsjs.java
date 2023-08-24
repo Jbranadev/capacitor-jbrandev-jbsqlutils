@@ -241,6 +241,8 @@ public class jbsqlutilsjs {
         JSObject or=where.getJSObject("or", null);
         JSObject orderBy=where.getJSObject("orderBy", null);
         JSObject take=where.getJSObject("take", null);
+        JSObject openParentecis=where.getJSObject("openParentecis", null);
+        JSObject closeParentecis=where.getJSObject("closeParentecis", null);
         if(!Objects.isNull(and)){
             Method metodo=getMethodforName(getMethodsModel(invocador),"and");
             return where(metodo.invoke(invocador, and.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(and.getString("operator")), and.get("value")), and);
@@ -253,6 +255,12 @@ public class jbsqlutilsjs {
         }else if(!Objects.isNull(take)){
             Method metodo=getMethodforName(getMethodsModel(invocador),"take");
             return where(metodo.invoke(invocador, take.getInteger("limite", 1)), take);
+        }else if(!Objects.isNull(openParentecis)){
+            Method metodo=getMethodforName(getMethodsModel(invocador),"openParentecis");
+            return where(metodo.invoke(invocador, Operator.AND.getNumeracionforName(openParentecis.getString("operatorPrev", null)), openParentecis.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(openParentecis.getString("operator")), openParentecis.get("value") ), openParentecis);
+        }else if(!Objects.isNull(closeParentecis)){
+            Method metodo=getMethodforName(getMethodsModel(invocador),"closeParentecis");
+            return where(metodo.invoke(invocador, Operator.AND.getNumeracionforName(closeParentecis.getString("operatorPost", null))), closeParentecis);
         }else{
             Method metodo=getMethodforName(getMethodsModel(invocador),"execute");
             return (int) metodo.invoke(invocador, null);
@@ -283,6 +291,8 @@ public class jbsqlutilsjs {
         JSObject or=where.getJSObject("or", null);
         JSObject orderBy=where.getJSObject("orderBy", null);
         JSObject take=where.getJSObject("take", null);
+        JSObject openParentecis=where.getJSObject("openParentecis", null);
+        JSObject closeParentecis=where.getJSObject("closeParentecis", null);
         if(!Objects.isNull(and)){
             Method metodo=getMethodforName(getMethodsModel(invocador),"and");
             return where(metodo.invoke(invocador, and.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(and.getString("operator")), and.get("value")), and, columnas);
@@ -295,6 +305,12 @@ public class jbsqlutilsjs {
         }else if(!Objects.isNull(take)){
             Method metodo=getMethodforName(getMethodsModel(invocador),"take");
             return where(metodo.invoke(invocador, take.getInteger("limite", 1)), take, columnas);
+        }else if(!Objects.isNull(openParentecis)){
+            Method metodo=getMethodforName(getMethodsModel(invocador),"openParentecis");
+            return where(metodo.invoke(invocador, Operator.AND.getNumeracionforName(openParentecis.getString("operatorPrev", null)), openParentecis.getString("columName"), Operator.IGUAL_QUE.getNumeracionforName(openParentecis.getString("operator")), openParentecis.get("value") ), openParentecis, columnas);
+        }else if(!Objects.isNull(closeParentecis)){
+            Method metodo=getMethodforName(getMethodsModel(invocador),"closeParentecis");
+            return where(metodo.invoke(invocador, Operator.AND.getNumeracionforName(closeParentecis.getString("operatorPost", null))), closeParentecis, columnas);
         }else{
             Method metodo=getMethodforName(getMethodsModel(invocador),"getInJsonObjects");
             return (List<JSONObject>) metodo.invoke(invocador, columnas);

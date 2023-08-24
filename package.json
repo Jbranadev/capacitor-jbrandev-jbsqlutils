@@ -1,6 +1,6 @@
 {
   "name": "capacitor-jbrandev-jbsqlutils",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "ORM JBSqlUtils",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
